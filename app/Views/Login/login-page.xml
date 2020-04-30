@@ -1,28 +1,30 @@
-<Page xmlns="http://schemas.nativescript.org/tns.xsd" navigatingTo="onNavigatingTo">
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" actionBarHidden="true" navigatingTo="onNavigatingTo">
     
     <StackLayout class="main">
         <StackLayout class="card">
             <Image class="logo" src="res://logo" />
             <Label class="title" text="DecoYeso"/>
         </StackLayout>
-        <StackLayout class="card">
-            <StackLayout class="input-field">
-                <Label class="text-field-tag" text="Usuario"/>
-                <TextField class="input" id="nickname"
-                 hint="Usuario"></TextField>
-            </StackLayout>
+        <ScrollView orientation="vertical" class="card">
+            <DockLayout  stretchLastChild="true" orientation="vertical">
+                <StackLayout class="input-field" dock="top">
+                    <Label class="text-field-tag" text="Usuario"/>
+                    <TextField class="input" id="nickname"
+                    hint="Usuario"></TextField>
+                </StackLayout>
 
-            <StackLayout class="input-field">
-            <Label class="text-field-tag" text="Contraseña"/>
-                <TextField class="input" id="password"
-                hint="Contraseña" secure="true"></TextField>
-            </StackLayout>
+                <StackLayout class="input-field" dock="top">
+                    <Label class="text-field-tag" text="Contraseña"/>
+                    <TextField class="input" id="password"
+                    hint="Contraseña" secure="true"></TextField>
+                </StackLayout>
 
-            <Button text="Iniciar Sesión" class="btn btn-primary" tap="Login"></Button>
-            <Button text="Registrarse" class="btn btn-secundary"></Button>
+                <Button text="Iniciar Sesión" class="btn btn-primary" tap="Login" dock="top"></Button>
+                <Button text="Registrarse" class="btn btn-secundary" tap="btnRegister" dock="top"></Button>
 
-            <Label text="Si olvidó su contraseña contacte a un administrador."
-            class="min-text" textWrap="true" />
-        </StackLayout>
+                <Label text="Si olvidó su contraseña contacte a un administrador."
+                class="min-text" textWrap="true" dock="top"/>
+            </DockLayout >
+        </ScrollView>
     </StackLayout>
 </Page>

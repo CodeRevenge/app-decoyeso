@@ -1,2 +1,2 @@
-<Frame defaultPage="Views/Login/login-page" actionBarVisibility="never">
+<Frame defaultPage="Views/login/login-page">
 </Frame>

@@ -23,3 +23,82 @@ The following CSS rule changes the font size of all Buttons that have the
 Button.-primary {
     font-size: 18;
 }
+
+Page {
+  background-color: indigo;
+  background-image: url('res://background');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+
+
+
+.main {
+  vertical-align: center;
+}
+
+.logo {
+  margin-top: 20;
+  height: 70;
+}
+
+.card {
+  background-color: #bdd2db;
+  vertical-align: center;
+  margin: 15px;
+  width: 350;
+  padding: 15 15;
+  border-radius: 15px;
+}
+
+.title {
+  font-size: 45 ;
+  text-align: center;
+  /* padding: 15 15 15 15; */
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  color: blue;
+}
+
+.title-m {
+  font-size: 30;
+}
+
+.text-field-tag{
+  padding: 5 15 5 15;
+  font-size: 18;
+  color: blue;
+}
+
+.input {
+  color: rgb(22, 27, 90);
+  font-size: 20;
+  placeholder-color: hsl(251, 37%, 35%);
+
+}
+
+.input-invalid {
+  border-color: red;
+}
+
+.btn {
+  color: rgb(184, 184, 206);
+}
+
+.btn-primary {
+  font-size: 20;
+  background-color: rgb(74, 74, 173);
+  height: 60;
+}
+
+.btn-secundary {
+  font-size: 17;
+  background-color: rgb(14, 4, 73);
+}
+
+.min-text {
+  font-size: 15;
+  color: gray;
+  text-align: center;
+  padding: 10, 0, 10, 0;
+}

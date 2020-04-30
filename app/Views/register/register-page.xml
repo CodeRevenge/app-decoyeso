@@ -1,0 +1,70 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" actionBarHidden="true" navigatingTo="onNavigatingTo">
+    
+    <StackLayout class="main">
+        <StackLayout class="space"></StackLayout>
+        <StackLayout class="card">
+            <Label class="title title-m" text="Registro"/>
+        </StackLayout>
+        <ScrollView orientation="vertical" class="card">
+            <DockLayout  stretchLastChild="true" orientation="vertical">
+                <StackLayout class="input-field" dock="top">
+                    <Label class="text-field-tag" text="CURP"/>
+                    <TextField class="input" id="nickname"
+                    hint="CURP"></TextField>
+                </StackLayout>
+
+                <StackLayout class="input-field" dock="top">
+                    <Label class="text-field-tag" text="Nickname"/>
+                    <TextField class="input" id="nickname"
+                    hint="Nickname"></TextField>
+                </StackLayout>
+
+                <StackLayout class="input-field" dock="top">
+                    <Label class="text-field-tag" text="Nombre"/>
+                    <TextField class="input" id="firstName"
+                    hint="Nombre"></TextField>
+                </StackLayout>
+
+                <StackLayout class="input-field" dock="top">
+                    <Label class="text-field-tag" text="Apellido"/>
+                    <TextField class="input" id="lastName"
+                    hint="Apellido"></TextField>
+                </StackLayout>
+
+                <StackLayout class="input-field" dock="top">
+                    <Label class="text-field-tag" text="Contraseña"/>
+                    <TextField class="input" id="password"
+                    hint="Contraseña" secure="true"></TextField>
+                </StackLayout>
+
+                <StackLayout class="input-field" dock="top">
+                    <Label class="text-field-tag" text="Repetir Contraseña"/>
+                    <TextField class="input" id="rep-password"
+                    hint="Repetir contraseña" secure="true"></TextField>
+                </StackLayout>
+
+                <StackLayout class="input-field" dock="top">
+                    <Label class="text-field-tag" text="Fecha de Nacimiento"/>
+                    <DatePicker year="{{ currentYear }}" month="{{ currentMonth }}"
+                    day="{{ currentDay}}" minDate="1960-01-01"
+                    maxDate="2100-12-31" />
+                </StackLayout>
+
+                <StackLayout class="input-field" dock="top">
+                    <Label class="text-field-tag" text="Dirección"/>
+                    <TextField class="input" id="addres"
+                    hint="Dirección"></TextField>
+                </StackLayout>
+
+                <StackLayout class="input-field" dock="top">
+                    <Label class="text-field-tag" text="Teléfono"/>
+                    <TextField class="input" id="phone"
+                    hint="Teléfono"></TextField>
+                </StackLayout>
+
+                <Button text="Registrar" class="btn btn-primary" tap="Register" dock="top"></Button>
+                <Button text="Cancelar" class="btn btn-secundary" tap="Cancel" dock="top"></Button>
+            </DockLayout >
+        </ScrollView>
+    </StackLayout>
+</Page>

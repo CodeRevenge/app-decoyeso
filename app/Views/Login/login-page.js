@@ -1,6 +1,7 @@
 var LoginViewModel = require("./login-view-model");
 var loginViewModel = new LoginViewModel();
 const dialogs = require("tns-core-modules/ui/dialogs");
+const { Frame } = require('ui/frame');
 
 function pageLoaded(args) {
     var page = args.object;
@@ -19,10 +20,9 @@ exports.Login = (args) => {
     var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function () {
 		if (this.readyState == 4 && this.status == 200) {
-            console.log(this.responseText);
             const response = JSON.parse(this.responseText);
 			if (response.status === "OK") {
-                console.log("LOGIN");
+                
                 dialogs.alert({
                     title: "LOGIN",
                     message: `${response.message}`,
@@ -45,9 +45,33 @@ exports.Login = (args) => {
 		}
 	};
 	let URI = encodeURI(`${conectionLink}?nickname=${nickname.text}&password=${password.text}`)
-    console.log(URI);
+    
 	xhttp.open("GET", URI, true);
 	xhttp.send();
 }
+
+exports.btnRegister = args => {
+    // navegacion a la ventana Bajas
+    const navegation = {
+      moduleName: "Views/register/register-page",
+      transition: {
+        name: "slide"
+      }
+    };
+    Frame.topmost().navigate(navegation);
+}
+
+exports.Login = args => {
+    // navegacion a la ventana Bajas
+    const navegation = {
+      moduleName: "Views/register/main-page",
+      transition: {
+        name: "slide"
+      }
+    };
+    Frame.topmost().navigate(navegation);
+}
+
+
 
 exports.pageLoaded = pageLoaded;
