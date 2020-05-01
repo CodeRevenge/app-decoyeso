@@ -1,4 +1,4 @@
-var InventoryViewModel = require("./inventory-view-model");
+const InventoryViewModel = require("./inventory-view-model");
 var inventoryViewModel = new InventoryViewModel();
 const dialogs = require("tns-core-modules/ui/dialogs");
 const { Label } = require("tns-core-modules/ui/label");

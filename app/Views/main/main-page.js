@@ -18,7 +18,7 @@ exports.regProd = (args) => {
 
 exports.showInventory = (args) => {
     const navegation = {
-        moduleName: "Views/inventory-list/inventory-page",
+        moduleName: "Views/inventory/inventory-page",
         transition: {
           name: "slide"
         }
