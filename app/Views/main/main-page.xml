@@ -1,0 +1,14 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" actionBarHidden="true" navigatingTo="onNavigatingTo">
+    
+    <StackLayout class="main">
+        <StackLayout class="card">
+            <Label class="title" text="Home"/>
+        </StackLayout>
+        <ScrollView orientation="vertical" class="card">
+            <DockLayout  stretchLastChild="true" orientation="vertical">
+                <Button text="Registrar producto" class="btn btn-primary" tap="regProd" dock="top"></Button>
+                <Button text="Ver inventario" class="btn btn-primary" tap="showInventory" dock="top"></Button>
+            </DockLayout >
+        </ScrollView>
+    </StackLayout>
+</Page>

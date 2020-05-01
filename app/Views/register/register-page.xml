@@ -9,7 +9,7 @@
             <DockLayout  stretchLastChild="true" orientation="vertical">
                 <StackLayout class="input-field" dock="top">
                     <Label class="text-field-tag" text="CURP"/>
-                    <TextField class="input" id="nickname"
+                    <TextField class="input" id="curp"
                     hint="CURP"></TextField>
                 </StackLayout>
 
@@ -39,7 +39,7 @@
 
                 <StackLayout class="input-field" dock="top">
                     <Label class="text-field-tag" text="Repetir Contraseña"/>
-                    <TextField class="input" id="rep-password"
+                    <TextField class="input" id="rep_password"
                     hint="Repetir contraseña" secure="true"></TextField>
                 </StackLayout>
 
@@ -47,7 +47,7 @@
                     <Label class="text-field-tag" text="Fecha de Nacimiento"/>
                     <DatePicker year="{{ currentYear }}" month="{{ currentMonth }}"
                     day="{{ currentDay}}" minDate="1960-01-01"
-                    maxDate="2100-12-31" />
+                    maxDate="2100-12-31" id="birthDay"/>
                 </StackLayout>
 
                 <StackLayout class="input-field" dock="top">
@@ -59,7 +59,7 @@
                 <StackLayout class="input-field" dock="top">
                     <Label class="text-field-tag" text="Teléfono"/>
                     <TextField class="input" id="phone"
-                    hint="Teléfono"></TextField>
+                    hint="Teléfono" keyboardType="phone"></TextField>
                 </StackLayout>
 
                 <Button text="Registrar" class="btn btn-primary" tap="Register" dock="top"></Button>

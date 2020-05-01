@@ -1,12 +1,14 @@
 var LoginViewModel = require("./login-view-model");
 var loginViewModel = new LoginViewModel();
 const dialogs = require("tns-core-modules/ui/dialogs");
-const { Frame } = require('ui/frame');
+
 
 function pageLoaded(args) {
     var page = args.object;
     page.bindingContext = loginViewModel;
 }
+
+
 
 exports.Login = (args) => {
     const login = args.object;
@@ -22,12 +24,22 @@ exports.Login = (args) => {
 		if (this.readyState == 4 && this.status == 200) {
             const response = JSON.parse(this.responseText);
 			if (response.status === "OK") {
-                
                 dialogs.alert({
-                    title: "LOGIN",
+                    title: "Bienvenido",
                     message: `${response.message}`,
                     okButtonText: "Ok",
-                })
+                }).then(() => {
+                    const navegation = {
+                        moduleName: "Views/main/main-page",
+                        transition: {
+                            name: "slide"
+                        }
+                    };
+                    console.log("Changing view ar.");
+                    
+                    args.object.page.frame.navigate(navegation);
+                });
+                
 			} else if (response.status === "WARNING") {
                 dialogs.alert({
                     title: "Error",
@@ -50,27 +62,16 @@ exports.Login = (args) => {
 	xhttp.send();
 }
 
-exports.btnRegister = args => {
-    // navegacion a la ventana Bajas
+exports.btnRegister = (args) => {
     const navegation = {
       moduleName: "Views/register/register-page",
       transition: {
         name: "slide"
       }
     };
-    Frame.topmost().navigate(navegation);
+    args.object.page.frame.navigate(navegation);
 }
 
-exports.Login = args => {
-    // navegacion a la ventana Bajas
-    const navegation = {
-      moduleName: "Views/register/main-page",
-      transition: {
-        name: "slide"
-      }
-    };
-    Frame.topmost().navigate(navegation);
-}
 
 
 
