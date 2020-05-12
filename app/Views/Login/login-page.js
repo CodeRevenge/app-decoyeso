@@ -1,6 +1,7 @@
 var LoginViewModel = require("./login-view-model");
 var loginViewModel = new LoginViewModel();
 const dialogs = require("tns-core-modules/ui/dialogs");
+const appSettings = require("tns-core-modules/application-settings");
 
 
 function pageLoaded(args) {
@@ -11,6 +12,7 @@ function pageLoaded(args) {
 
 
 exports.Login = (args) => {
+    console.log(appSettings.getString('token'));
     const login = args.object;
     const loginParent = login.parent;
 
@@ -35,7 +37,8 @@ exports.Login = (args) => {
                             name: "slide"
                         }
                     };
-                    console.log("Changing view ar.");
+                    
+                    appSettings.setString("token", response.jwt);
                     
                     args.object.page.frame.navigate(navegation);
                 });

@@ -10,9 +10,9 @@ exports.onNavigatingTo = (args) => {
 
     // const inventory = args.object;
     // const inventoryParent = inventory.parent;
-    
+
     const list = page.getViewById("inventoryList");
-    
+
 
     const stackLayout = new StackLayout();
     const name = new Label();
@@ -37,18 +37,18 @@ exports.onNavigatingTo = (args) => {
     stackLayout.className = "input-field";
     stackLayout.dock = "top";
     list.addChild(stackLayout);
-    
+
 
     const conectionLink = "http://ppicucei.000webhostapp.com/decoyeso/lista_inventario.php";
 
     var xhttp = new XMLHttpRequest();
-	xhttp.onreadystatechange = function () {
-		if (this.readyState == 4 && this.status == 200) {
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
             // console.log(this.responseText);
             const response = JSON.parse(this.responseText);
-			if (response) {
-                
-                for(var i in response) {
+            if (response) {
+
+                for (var i in response) {
                     const stackLayout = new StackLayout();
 
                     const name = new Label();
@@ -73,10 +73,10 @@ exports.onNavigatingTo = (args) => {
                     stackLayout.className = "input-field";
                     stackLayout.dock = "top";
                     list.addChild(stackLayout);
-                
+
                 }
-                
-			} else if (response.status === "WARNING") {
+
+            } else if (response.status === "WARNING") {
                 dialogs.alert({
                     title: "Error",
                     message: `${response.message}`,
@@ -90,12 +90,12 @@ exports.onNavigatingTo = (args) => {
                 })
             }
 
-		}
-	};
+        }
+    };
     let URI = encodeURI(conectionLink)
     console.log(URI);
-	xhttp.open("GET", URI, true);
-	xhttp.send();
+    xhttp.open("GET", URI, true);
+    xhttp.send();
 }
 
 exports.Back = (args) => {
