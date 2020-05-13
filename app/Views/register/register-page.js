@@ -59,6 +59,19 @@ exports.Register = (args) => {
                     title: "Nuevo Usuario",
                     message: `Usuario registrado`,
                     okButtonText: "Ok",
+                }).then(() => {
+                    const navegation = {
+                        moduleName: "Views/main/main-page",
+                        clearHistory: true,
+                        transition: {
+                            name: "slide",
+                        },
+                    };
+
+                    appSettings.setString("token", response.jwt);
+                    appSettings.setBoolean("auth", true);
+
+                    args.object.page.frame.navigate(navegation);
                 })
 			} else if(response.status === "EXIST_ERROR") {
                 

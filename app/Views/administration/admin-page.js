@@ -1,61 +1,27 @@
-const MainViewModel = require("./main-view-model");
+const AdminViewModel = require("./admin-view-model");
 const appSettings = require("tns-core-modules/application-settings");
 const { Label } = require("tns-core-modules/ui/label");
 var dialogs = require("tns-core-modules/ui/dialogs");
 var { Frame } = require("tns-core-modules/ui/frame");
 const { Button } = require("tns-core-modules/ui/button");
-var mainViewModel = new MainViewModel();
-const platformModule = require("tns-core-modules/platform");
-var Toast = require("nativescript-toast");
-const application = require("tns-core-modules/application");
+var adminViewModel = new AdminViewModel();
 
 const { verifyToken, deleteSesion } = require("../../functions");
 
-// exports.onPageLoaded = () => {
-// 	if (application.android) {
-// 		application.android.on(
-// 			application.AndroidApplication.activityBackPressedEvent,
-// 			this.backEvent
-//     );
-//     console.log("ON")
-// 	}
-// };
-
-// exports.onPageUnloaded = () => {
-// 	if (application.android) {
-// 		application.android.off(
-// 			application.AndroidApplication.activityBackPressedEvent,
-// 			this.backEvent
-//     );
-//     console.log("OFF")
-// 	}
-// };
-
-// exports.backEvent = () => {
-// 	console.log("Good bye button");
-// 	// let toast = Toast.makeText("Goodbye from toast").show();
-// };
-
 exports.onNavigatingTo = async (args) => {
 	const page = args.object;
-	page.bindingContext = mainViewModel;
+	page.bindingContext = adminViewModel;
 
-  
 	const verifiedToken = await verifyToken();
 
 	if (verifiedToken.id === 0) {
 		const conectionLink =
 			"http://ppicucei.000webhostapp.com/decoyeso/empleado_info.php";
 
-    const infoCard = page.getViewById("info");
-    const options = page.getViewById("options");
-
-    infoCard.removeChildren();
-    options.removeChildren();
-
+		const infoCard = page.getViewById("info");
 
 		await fetch(conectionLink, {
-			method: "GET",
+			method: "GET", // or 'PUT'
 			headers: {
 				TOKEN: appSettings.getString("token"),
 			},
@@ -68,8 +34,6 @@ exports.onNavigatingTo = async (args) => {
 			.then((json) => {
 				console.log("JSON User: " + JSON.stringify(json));
 				if (json.status === "OK") {
-          
-
 					const name = new Label();
 					name.text = json.data.nickname;
 					name.className = "nickname";
@@ -86,37 +50,42 @@ exports.onNavigatingTo = async (args) => {
 					infoCard.addChild(name);
 					infoCard.addChild(role);
 
-					const newSale = new Button();
-					newSale.text = "Nueva Venta";
-					newSale.className = "btn btn-primary btn-sales";
-					newSale.on("tap", this.showInventory);
-					newSale.dock = "top";
+					options = page.getViewById("options");
+					const adminProducts = new Button();
+					adminProducts.text = "Administrar productos";
+					adminProducts.className = "btn btn-primary";
+					adminProducts.on("tap", this.showInventory);
+					adminProducts.dock = "top";
 
-					const inventory = new Button();
-					inventory.text = "Ver inventario";
-					inventory.className = "btn btn-primary";
-					inventory.on("tap", this.showInventory);
-					inventory.dock = "top";
+					const adminEmployees = new Button();
+					adminEmployees.text = "Administrar Empleados";
+					adminEmployees.className = "btn btn-primary";
+					adminEmployees.on("tap", this.showInventory);
+					adminEmployees.dock = "top";
 
-					const logout = new Button();
-					logout.text = "Cerrar Sesión";
-					logout.className = "btn btn-secundary";
-					logout.on("tap", this.closeSesion);
-					logout.dock = "bottom";
+					const adminSales = new Button();
+					adminSales.text = "Administrar ventas";
+					adminSales.className = "btn btn-primary";
+					adminSales.on("tap", this.showInventory);
+					adminSales.dock = "top";
 
-					options.addChild(newSale);
-					options.addChild(inventory);
-					options.addChild(logout);
+					const adminClients = new Button();
+					adminClients.text = "Administrar Clientes";
+					adminClients.className = "btn btn-primary";
+					adminClients.on("tap", this.showInventory);
+					adminClients.dock = "top";
 
-					if (verifiedToken.role > 1) {
-						const admin = new Button();
-						admin.text = "Administrador";
-						admin.className = "btn btn-primary";
-						admin.on("tap", this.adminPage);
-						admin.dock = "bottom";
+					const backButton = new Button();
+					backButton.text = "Administrar Clientes";
+					backButton.className = "btn btn-secundary";
+					backButton.on("tap", this.showInventory);
+					backButton.dock = "bottom";
 
-						options.addChild(admin);
-					}
+					options.addChild(adminProducts);
+					options.addChild(adminEmployees);
+					options.addChild(adminSales);
+					options.addChild(adminClients);
+					options.addChild(backButton);
 				} else if (json.status === "TOKEN_EXPIRED") {
 					dialogs
 						.alert({
@@ -128,7 +97,6 @@ exports.onNavigatingTo = async (args) => {
 							deleteSesion();
 							const navegation = {
 								moduleName: "Views/login/login-page",
-								clearHistory: true,
 							};
 							Frame.topmost().navigate(navegation);
 						});
@@ -146,7 +114,6 @@ exports.onNavigatingTo = async (args) => {
 							console.log(appSettings.getString("token"));
 							const navegation = {
 								moduleName: "Views/login/login-page",
-								clearHistory: true,
 							};
 							Frame.topmost().navigate(navegation);
 						});
@@ -168,7 +135,6 @@ exports.onNavigatingTo = async (args) => {
 				deleteSesion();
 				const navegation = {
 					moduleName: "Views/login/login-page",
-					clearHistory: true,
 				};
 				Frame.topmost().navigate(navegation);
 			});
@@ -184,21 +150,10 @@ exports.onNavigatingTo = async (args) => {
 				console.log(appSettings.getString("token"));
 				const navegation = {
 					moduleName: "Views/login/login-page",
-					clearHistory: true,
 				};
 				Frame.topmost().navigate(navegation);
 			});
 	}
-};
-
-exports.adminPage = (args) => {
-	const navegation = {
-		moduleName: "Views/administration/admin-page",
-		transition: {
-			name: "slide",
-		},
-	};
-	args.object.page.frame.navigate(navegation);
 };
 
 exports.regProd = (args) => {
@@ -211,39 +166,18 @@ exports.regProd = (args) => {
 	args.object.page.frame.navigate(navegation);
 };
 
-exports.showInventory = (args) => {
+exports.adminProducts = (args) => {
 	const navegation = {
 		moduleName: "Views/inventory/inventory-page",
 		transition: {
 			name: "slide",
 		},
 	};
-	Frame.topmost().navigate(navegation);
+	args.object.page.frame.navigate(navegation);
 };
 
-exports.closeSesion = (args) => {
-	dialogs
-		.confirm({
-			title: "Error",
-			message: "Seguro que desea cerrar seción",
-			okButtonText: "Salir",
-			cancelButtonText: "Cancelar",
-		})
-		.then(function (result) {
-			if (result) {
-				deleteSesion();
-
-				const navegation = {
-					moduleName: "Views/login/login-page",
-					clearHistory: true,
-				};
-				args.object.page.frame.navigate(navegation);
-			}
-		});
+exports.backButton = (args) => {
+	const button = args.object;
+	const page = button.page;
+	page.frame.goBack();
 };
-
-exports.showMoreInfo = (args) => {
-
-}
-
-

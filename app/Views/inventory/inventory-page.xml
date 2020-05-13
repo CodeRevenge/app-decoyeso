@@ -1,16 +1,26 @@
 <Page xmlns="http://schemas.nativescript.org/tns.xsd" actionBarHidden="true" navigatingTo="onNavigatingTo">
-    
+
     <StackLayout class="main">
         <StackLayout class="space"></StackLayout>
         <StackLayout class="card">
             <Label class="title title-m" text="Inventario"/>
         </StackLayout>
-        <ScrollView orientation="vertical" class="card">
-            <DockLayout  stretchLastChild="true" orientation="vertical" id="inventoryList">
-                
-                
-                <Button text="Atras" class="btn btn-primary" tap="Back" dock="bottom"></Button>
-            </DockLayout >
-        </ScrollView>
+        <!-- <ScrollView orientation="vertical" class="card"> -->
+        <DockLayout stretchLastChild="true" orientation="vertical">
+            <ListView id="inventoryList" class="card" style="height:1250px" dock="top" itemTap="onItemTap">
+                <ListView.itemTemplate>
+                    <FlexboxLayout flexDirection="row">
+                        <Label text="{{ id || 'Cargando...' }}" class="products" horizontalAlignment="left" style="width: 15%" />
+                        <Label text="{{ name || 'Cargando...' }}" class="products" horizontalAlignment="left" style="width: 30%" />
+                        <Label text="{{ quantity  || 'Cargando...' }}" class="products" verticalAlignment="center" style="width: 20%" />
+                        <Label text="{{ value || 'Cargando...'  }}" class="products" verticalAlignment="center" style="width: 30%" />
+                    </FlexboxLayout>
+                </ListView.itemTemplate>
+            </ListView>
+
+            <Button text="Atras" class="btn btn-primary" tap="Back" dock="bottom"></Button>
+        </DockLayout >
+        <!-- </ScrollView> -->
+
     </StackLayout>
 </Page>
