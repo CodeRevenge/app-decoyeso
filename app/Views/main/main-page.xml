@@ -1,5 +1,5 @@
 <Page xmlns="http://schemas.nativescript.org/tns.xsd" actionBarHidden="true" navigatingTo="onNavigatingTo">
-
+    <ActivityIndicator busy="true" loaded="indicatorLoaded"/>
     <StackLayout class="main">
 
         <StackLayout id="info" class="card info"/>

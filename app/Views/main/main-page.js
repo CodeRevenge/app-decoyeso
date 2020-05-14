@@ -11,48 +11,23 @@ const application = require("tns-core-modules/application");
 
 const { verifyToken, deleteSesion } = require("../../functions");
 
-// exports.onPageLoaded = () => {
-// 	if (application.android) {
-// 		application.android.on(
-// 			application.AndroidApplication.activityBackPressedEvent,
-// 			this.backEvent
-//     );
-//     console.log("ON")
-// 	}
-// };
 
-// exports.onPageUnloaded = () => {
-// 	if (application.android) {
-// 		application.android.off(
-// 			application.AndroidApplication.activityBackPressedEvent,
-// 			this.backEvent
-//     );
-//     console.log("OFF")
-// 	}
-// };
-
-// exports.backEvent = () => {
-// 	console.log("Good bye button");
-// 	// let toast = Toast.makeText("Goodbye from toast").show();
-// };
 
 exports.onNavigatingTo = async (args) => {
 	const page = args.object;
 	page.bindingContext = mainViewModel;
 
-  
 	const verifiedToken = await verifyToken();
 
 	if (verifiedToken.id === 0) {
 		const conectionLink =
 			"http://ppicucei.000webhostapp.com/decoyeso/empleado_info.php";
 
-    const infoCard = page.getViewById("info");
-    const options = page.getViewById("options");
+		const infoCard = page.getViewById("info");
+		const options = page.getViewById("options");
 
-    infoCard.removeChildren();
-    options.removeChildren();
-
+		infoCard.removeChildren();
+		options.removeChildren();
 
 		await fetch(conectionLink, {
 			method: "GET",
@@ -68,8 +43,8 @@ exports.onNavigatingTo = async (args) => {
 			.then((json) => {
 				console.log("JSON User: " + JSON.stringify(json));
 				if (json.status === "OK") {
-          
 
+					
 					const name = new Label();
 					name.text = json.data.nickname;
 					name.className = "nickname";
@@ -155,7 +130,22 @@ exports.onNavigatingTo = async (args) => {
 			})
 			.then((data) => data)
 			.catch((err) => {
-				console.error("Petición fallida: ", err);
+				console.error("Petición fallida (Main): ", err);
+				dialogs
+					.alert({
+						title: "Error",
+						message: `Sucedio un error inesperado. ${err}`,
+						okButtonText: "Ok",
+					})
+					.then(() => {
+						deleteSesion();
+						console.log(appSettings.getString("token"));
+						const navegation = {
+							moduleName: "Views/login/login-page",
+							clearHistory: true,
+						};
+						Frame.topmost().navigate(navegation);
+					});
 			});
 	} else if (verifiedToken.id === 1) {
 		dialogs
@@ -242,8 +232,4 @@ exports.closeSesion = (args) => {
 		});
 };
 
-exports.showMoreInfo = (args) => {
-
-}
-
-
+exports.showMoreInfo = (args) => {};

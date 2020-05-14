@@ -1,0 +1,10 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" actionBarHidden="true" navigatingTo="onNavigatingTo" loaded="onPageLoaded">
+
+  <StackLayout class="main">
+
+    <StackLayout id="info" class="card info" />
+    <ScrollView orientation="vertical" class="card">
+      <DockLayout id="options" stretchLastChild="true" orientation="vertical" />
+    </ScrollView>
+  </StackLayout>
+</Page>

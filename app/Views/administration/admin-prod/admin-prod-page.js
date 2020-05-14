@@ -1,16 +1,16 @@
-const AdminViewModel = require("./admin-view-model");
+const AdminProdViewModel = require("./admin-prod-view-model");
 const appSettings = require("tns-core-modules/application-settings");
 const { Label } = require("tns-core-modules/ui/label");
 var dialogs = require("tns-core-modules/ui/dialogs");
 var { Frame } = require("tns-core-modules/ui/frame");
 const { Button } = require("tns-core-modules/ui/button");
-var adminViewModel = new AdminViewModel();
+var adminProdViewModel = new AdminProdViewModel();
 
-const { verifyToken, deleteSesion } = require("../../functions");
+const { verifyToken, deleteSesion } = require("../../../functions");
 
 exports.onNavigatingTo = async (args) => {
 	const page = args.object;
-	page.bindingContext = adminViewModel;
+	page.bindingContext = adminProdViewModel;
 
 	const verifiedToken = await verifyToken();
 
@@ -39,45 +39,28 @@ exports.onNavigatingTo = async (args) => {
 				console.log("JSON User: " + JSON.stringify(json));
 				if (json.status === "OK") {
 					const name = new Label();
-					name.text = "Administración";
-					name.className = "nickname";
-
-					const role = new Label();
-					role.text = json.data.role;
-					role.className = "role";
-
-					const fname = new Label();
-					fname.text = json.data.firstname;
-					fname.className = "fname";
-
-					infoCard.addChild(fname);
+					name.text = "Administrador de Productos";
+					name.className = "title";
+					name.textWrap = true;
 					infoCard.addChild(name);
-					infoCard.addChild(role);
 
-					
-					const adminProducts = new Button();
-					adminProducts.text = "Administrar Productos";
-					adminProducts.className = "btn btn-primary";
-					adminProducts.on("tap", this.adminProdPage);
-					adminProducts.dock = "top";
+					const registerProds = new Button();
+					registerProds.text = "Registrar nuevo producto";
+					registerProds.className = "btn btn-primary";
+					registerProds.on("tap", this.backButton);
+					registerProds.dock = "top";
 
-					const adminEmployees = new Button();
-					adminEmployees.text = "Administrar Empleados";
-					adminEmployees.className = "btn btn-primary";
-					adminEmployees.on("tap", this.adminProdPage);
-					adminEmployees.dock = "top";
+					const updateProd = new Button();
+					updateProd.text = "Modificar inventario";
+					updateProd.className = "btn btn-primary";
+					updateProd.on("tap", this.backButton);
+					updateProd.dock = "top";
 
-					const adminSales = new Button();
-					adminSales.text = "Administrar Ventas";
-					adminSales.className = "btn btn-primary";
-					adminSales.on("tap", this.adminProdPage);
-					adminSales.dock = "top";
-
-					const adminClients = new Button();
-					adminClients.text = "Administrar Clientes";
-					adminClients.className = "btn btn-primary";
-					adminClients.on("tap", this.adminProdPage);
-					adminClients.dock = "top";
+					const delProds = new Button();
+					delProds.text = "Eliminar productos";
+					delProds.className = "btn btn-primary";
+					delProds.on("tap", this.backButton);
+					delProds.dock = "top";
 
 					const backButton = new Button();
 					backButton.text = "Regresar";
@@ -85,10 +68,9 @@ exports.onNavigatingTo = async (args) => {
 					backButton.on("tap", this.backButton);
 					backButton.dock = "bottom";
 
-					options.addChild(adminProducts);
-					options.addChild(adminEmployees);
-					options.addChild(adminSales);
-					options.addChild(adminClients);
+					options.addChild(registerProds);
+					options.addChild(updateProd);
+					options.addChild(delProds);
 					options.addChild(backButton);
 				} else if (json.status === "TOKEN_EXPIRED") {
 					dialogs
@@ -159,46 +141,6 @@ exports.onNavigatingTo = async (args) => {
 			});
 	}
 };
-
-exports.adminProdPage = (args) => {
-	const navegation = {
-		moduleName: "Views/administration/admin-prod/admin-prod-page",
-		transition: {
-			name: "slide",
-		},
-	};
-	args.object.page.frame.navigate(navegation);
-}
-
-exports.adminEmployeesPage = (args) => {
-	const navegation = {
-		moduleName: "Views/administration/admin-prod/admin-prod-page",
-		transition: {
-			name: "slide",
-		},
-	};
-	args.object.page.frame.navigate(navegation);
-}
-
-exports.adminSalesPage = (args) => {
-	const navegation = {
-		moduleName: "Views/administration/admin-prod/admin-prod-page",
-		transition: {
-			name: "slide",
-		},
-	};
-	args.object.page.frame.navigate(navegation);
-}
-
-exports.adminClientsPage = (args) => {
-	const navegation = {
-		moduleName: "Views/administration/admin-prod/admin-prod-page",
-		transition: {
-			name: "slide",
-		},
-	};
-	args.object.page.frame.navigate(navegation);
-}
 
 exports.regProd = (args) => {
 	const navegation = {
