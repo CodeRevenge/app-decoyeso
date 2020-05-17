@@ -47,7 +47,7 @@ exports.Register = (args) => {
 
     
 
-    const conectionLink = "http://ppicucei.000webhostapp.com/decoyeso/alta_empleado.php";
+    const conectionLink = appSettings.getString("backHost") + "alta_empleado.php";
 
     var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function () {

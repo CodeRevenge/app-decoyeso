@@ -15,8 +15,7 @@ exports.onNavigatingTo = async (args) => {
 	const verifiedToken = await verifyToken();
 
 	if (verifiedToken.id === 0) {
-		const conectionLink =
-			"http://ppicucei.000webhostapp.com/decoyeso/empleado_info.php";
+		const conectionLink = appSettings.getString("backHost") + "empleado_info.php";
 
 		const infoCard = page.getViewById("info");
 		const options = page.getViewById("options");

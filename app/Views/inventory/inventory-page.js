@@ -5,6 +5,8 @@ const { Label } = require("tns-core-modules/ui/label");
 const { StackLayout } = require("ui/layouts/stack-layout");
 const { FlexboxLayout } = require("ui/layouts/flexbox-layout");
 const { ObservableArray } = require("tns-core-modules/data/observable-array");
+const appSettings = require("tns-core-modules/application-settings");
+const { Frame } = require("tns-core-modules/ui/frame");
 
 exports.onNavigatingTo = async (args) => {
 	var page = args.object;
@@ -14,34 +16,13 @@ exports.onNavigatingTo = async (args) => {
 	const inventoryParent = inventory.parent;
 
 	const list = page.getViewById("inventoryList");
-
-	// const stackLayout = new StackLayout();
-	// const name = new Label();
-	// name.text = "Nombre";
-	// name.textAlignment = "center";
-	// name.className = "products";
-
-	// const quantity = new Label();
-	// quantity.text = "Cantidad";
-	// quantity.textAlignment = "center";
-	// quantity.className = "products";
-
-	// const value = new Label();
-	// value.text = "Costo";
-	// value.textAlignment = "center";
-	// value.className = "products";
-
-	// stackLayout.orientation = "horizontal";
-	// stackLayout.addChild(name);
-	// stackLayout.addChild(value);
-	// stackLayout.addChild(quantity);
-	// stackLayout.className = "input-field";
-	// stackLayout.dock = "top";
-	// list.addChild(stackLayout);
+	console.log("LOADING INVENTORY");
 
 	const conectionLink = encodeURI(
-		"http://ppicucei.000webhostapp.com/decoyeso/lista_inventario.php"
+		appSettings.getString("backHost") + "lista_inventario.php"
 	);
+
+	console.log(appSettings.getString("token"));
 
 	await fetch(conectionLink)
 		.then(async (resp) => {
@@ -52,11 +33,12 @@ exports.onNavigatingTo = async (args) => {
 		.then((json) => {
 			const obsProducts = new ObservableArray();
 			for (var i in json) {
+				let value = json[i].value.slice(0, -1);
 				const item = {
 					id: json[i].id,
 					name: json[i].name,
 					quantity: json[i].quantity,
-					value: json[i].value,
+					value,
 				};
 				obsProducts.push(item);
 			}
@@ -76,14 +58,20 @@ exports.onNavigatingTo = async (args) => {
 };
 
 exports.onItemTap = (args) => {
-	console.log(args);
-	const tappedItemIndex = args.index;
-	const tappedItemView = args.view;
-	dialogs
-		.alert(`Index: ${tappedItemIndex} View: ${tappedItemView}`)
-		.then(() => {
-			console.log("Dialog closed!");
-		});
+	const id = args.view.getViewById("id").text;
+	console.log(id)
+	const navegation = {
+		moduleName: "Views/products/details/detail-products-page",
+		transition: {
+			name: "slide",
+		},
+		context: {
+			id,
+		},
+	};
+
+	console.log("ITEM: " + JSON.stringify(navegation))
+	Frame.topmost().navigate(navegation);
 };
 
 exports.Back = (args) => {

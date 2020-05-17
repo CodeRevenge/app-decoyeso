@@ -1,23 +1,23 @@
-const MainViewModel = require("./main-view-model");
+const DetailsProductsViewModel = require("./detail-products-view-model");
 const appSettings = require("tns-core-modules/application-settings");
 const { Label } = require("tns-core-modules/ui/label");
 var dialogs = require("tns-core-modules/ui/dialogs");
 var { Frame } = require("tns-core-modules/ui/frame");
 const { Button } = require("tns-core-modules/ui/button");
-var mainViewModel = new MainViewModel();
-const platformModule = require("tns-core-modules/platform");
-var Toast = require("nativescript-toast");
-const application = require("tns-core-modules/application");
+var detailsProductsViewModel = new DetailsProductsViewModel();
 
 const {
 	verifyToken,
 	deleteSesion,
 	createActivityIndicator,
-} = require("../../functions");
+	parseJSON,
+	checkStatus,
+} = require("../../../functions");
 
 exports.onNavigatingTo = async (args) => {
+	console.log("OK");
 	const page = args.object;
-	page.bindingContext = mainViewModel;
+	page.bindingContext = detailsProductsViewModel;
 
 	const main = page.getViewById("main");
 	const indicator = createActivityIndicator();
@@ -27,7 +27,9 @@ exports.onNavigatingTo = async (args) => {
 
 	if (verifiedToken.id === 0) {
 		const conectionLink =
-			appSettings.getString("backHost") + "empleado_info.php";
+			appSettings.getString("backHost") +
+			"detalles_producto.php?id=" +
+			page.navigationContext.id;
 
 		console.log(conectionLink);
 
@@ -43,31 +45,43 @@ exports.onNavigatingTo = async (args) => {
 				TOKEN: appSettings.getString("token"),
 			},
 		})
-			.then(async (resp) => {
-				if (resp.ok) {
-					return await resp.json();
-				}
-			})
+			.then(checkStatus)
+			.then(parseJSON)
 			.then((json) => {
-				console.log("JSON User: " + JSON.stringify(json));
+				console.log("JSON Produc: " + JSON.stringify(json));
 				if (json.status === "OK") {
 					indicator.busy = false;
 					main.removeChild(indicator);
+					const id = new Label();
+					id.text = json.data.id;
+					id.className = "title";
+
 					const name = new Label();
-					name.text = json.data.nickname;
-					name.className = "nickname";
+					name.text = json.data.name;
+					name.className = "";
 
-					const role = new Label();
-					role.text = json.data.role;
-					role.className = "role";
+					const desc = new Label();
+					desc.text = json.data.descr;
+					desc.className = "";
 
-					const fname = new Label();
-					fname.text = json.data.firstname;
-					fname.className = "fname";
+					const value = new Label();
+					value.text = json.data.value.slice(0, -1);
+					value.className = "";
 
-					infoCard.addChild(fname);
+					const qnt = new Label();
+					qnt.text = json.data.qnt;
+					qnt.className = "";
+
+					const date = new Label();
+					date.text = json.data.date;
+					date.className = "";
+
+					infoCard.addChild(id);
 					infoCard.addChild(name);
-					infoCard.addChild(role);
+					infoCard.addChild(desc);
+					infoCard.addChild(value);
+					infoCard.addChild(qnt);
+					infoCard.addChild(date);
 
 					const newSale = new Button();
 					newSale.text = "Nueva Venta";

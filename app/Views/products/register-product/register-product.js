@@ -19,7 +19,7 @@ exports.Register = (args) => {
 
         
 
-    const conectionLink = "http://ppicucei.000webhostapp.com/decoyeso/altas_productos.php";
+    const conectionLink = appSettings.getString("backHost") + "altas_productos.php";
 
     var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function () {

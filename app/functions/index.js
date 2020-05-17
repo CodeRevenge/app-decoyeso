@@ -1,32 +1,38 @@
 var { Frame } = require("tns-core-modules/ui/frame");
 const appSettings = require("tns-core-modules/application-settings");
+const { ActivityIndicator } = require("tns-core-modules/ui/activity-indicator");
 
 exports.checkStatus = (response) => {
+	console.log("CHECK STATUS: Status " + response.status);
 	if (response.status >= 200 && response.status < 300) {
 		return response;
 	} else {
-		console.log(response.statusText);
 		var error = new Error(response.statusText);
 		error.response = response;
 		throw error;
 	}
 };
 
-const _verifyToken = async () => {
-	const conectionLink =
-		"http://ppicucei.000webhostapp.com/decoyeso/sesion_activa.php";
+exports.parseJSON = (resp) => {
+	console.log("PARSING JSON");
+	return resp.json();
+};
 
-	console.log(appSettings.getString("token"));
+const _verifyToken = async () => {
+	const conectionLink = encodeURI(
+		appSettings.getString("backHost") + "sesion_activa.php"
+	);
+
 	return await fetch(conectionLink, {
 		method: "GET", // or 'PUT'
 		headers: {
-			TOKEN: appSettings.getString("token"),
+			token: appSettings.getString("token"),
 		},
 	})
-		.then(checkStatus)
-		.then(async (resp) => resp.json())
+		.then(this.checkStatus)
+		.then(this.parseJSON)
 		.then((json) => {
-			console.log("JSON: " + JSON.stringify(json));
+			console.log("JSON: " + JSON.stringify(json))
 			if (json.status === "OK") {
 				return {
 					status: true,
@@ -69,4 +75,13 @@ exports.verifyToken = async () => {
 exports.deleteSesion = () => {
 	appSettings.remove("token");
 	appSettings.remove("auth");
+};
+
+exports.createActivityIndicator = () => {
+	const indicator = new ActivityIndicator();
+	indicator.busy = true;
+	indicator.width = 100;
+	indicator.height = 100;
+
+	return indicator;
 };

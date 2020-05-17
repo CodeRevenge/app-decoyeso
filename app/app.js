@@ -6,11 +6,19 @@ purpose of the file is to pass control to the app’s first module.
 const application = require("tns-core-modules/application");
 const appSettings = require("tns-core-modules/application-settings");
 
+// appSettings.setString("backHost", "http://ppicucei.000webhostapp.com/decoyeso/")
+appSettings.setString(
+	"backHost",
+	"http://deco-yeso.000webhostapp.com/decoyeso/"
+);
+// appSettings.setString("backHost", "localhost/backend-decoyeso/")
+console.log(appSettings.getString("backHost"));
+
 if (!appSettings.getBoolean("auth")) {
-  console.log("No auth");
-  application.run({ moduleName: "app-login" });
+	console.log("No auth");
+	application.run({ moduleName: "app-login" });
 } else {
-  console.log("Auth");
+	console.log("Auth");
 	application.run({ moduleName: "app-root" });
 }
 

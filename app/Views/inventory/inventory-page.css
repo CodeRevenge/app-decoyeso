@@ -12,3 +12,26 @@
   color: rgb(28, 134, 196);
   text-align: center;
 }
+
+.id {
+  font-size: 20;;
+}
+
+.name {
+  font-size: 20;
+}
+
+.qnty {
+  font-size: 18;
+}
+
+.cost {
+  font-size: 20;
+  color: green;
+}
+
+.col-title {
+  font-size: 17;
+  padding: 0, 15, 0, 15;
+  color: blue;
+}

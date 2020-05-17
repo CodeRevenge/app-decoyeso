@@ -4,8 +4,7 @@ const dialogs = require("tns-core-modules/ui/dialogs");
 const appSettings = require("tns-core-modules/application-settings");
 const Toast = require("nativescript-toast");
 const { Frame } = require("tns-core-modules/ui/frame");
-const { ActivityIndicator } = require("tns-core-modules/ui/activity-indicator");
-const { checkStatus } = require("../../functions");
+const { checkStatus, createActivityIndicator } = require("../../functions");
 
 function pageLoaded(args) {
 	var page = args.object;
@@ -33,15 +32,11 @@ exports.Login = async (args) => {
 
 	const main = login.page.getViewById("main");
 	const loginSL = main.getViewById("login");
-	const indicator = new ActivityIndicator();
-	indicator.busy = true;
-	indicator.width = 100;
-	indicator.height = 100;
-
+	const indicator = createActivityIndicator();
 	main.removeChildren();
 	main.addChild(indicator);
 
-	const conectionLink = "http://ppicucei.000webhostapp.com/decoyeso/login.php";
+	const conectionLink = appSettings.getString("backHost") + "login.php";
 	let URI = encodeURI(
 		`${conectionLink}?nickname=${nickname.text}&password=${password.text}`
 	);
@@ -69,21 +64,33 @@ exports.Login = async (args) => {
 						appSettings.setString("token", json.jwt);
 						appSettings.setBoolean("auth", true);
 						let toast = Toast.makeText(json.message).show();
-
+						indicator.busy = false;
 						args.object.page.frame.navigate(navegation);
 					});
 			} else if (json.status === "WARNING") {
-				dialogs.alert({
-					title: "Error",
-					message: `${json.message}`,
-					okButtonText: "Ok",
-				});
+				dialogs
+					.alert({
+						title: "Error",
+						message: `${json.message}`,
+						okButtonText: "Ok",
+					})
+					.then(() => {
+						indicator.busy = false;
+						main.removeChild(indicator);
+						main.addChild(loginSL);
+					});
 			} else {
-				dialogs.alert({
-					title: "Error",
-					message: `Sucedio un error inesperado. ${json}`,
-					okButtonText: "Ok",
-				});
+				dialogs
+					.alert({
+						title: "Error",
+						message: `Sucedio un error inesperado. ${json}`,
+						okButtonText: "Ok",
+					})
+					.then(() => {
+						indicator.busy = false;
+						main.removeChild(indicator);
+						main.addChild(loginSL);
+					});
 			}
 		})
 		.catch((err) => {
@@ -96,61 +103,10 @@ exports.Login = async (args) => {
 				})
 				.then(() => {
 					indicator.busy = false;
+					main.removeChild(indicator);
 					main.addChild(loginSL);
 				});
 		});
-
-	// var xhttp = new XMLHttpRequest();
-	// xhttp.onreadystatechange = function () {
-	// 	if (this.readyState == 4 && this.status == 200) {
-	// 		console.log(this.responseText);
-	// 		const response = JSON.parse(this.responseText);
-	// 		if (response.status === "OK") {
-	// 			dialogs
-	// 				.alert({
-	// 					title: "Sesión ",
-	// 					message: `${response.message}`,
-	// 					okButtonText: "Ok",
-	// 				})
-	// 				.then(() => {
-	// 					const navegation = {
-	// 						moduleName: "Views/main/main-page",
-	// 						clearHistory: true,
-	// 						transition: {
-	// 							name: "slide",
-	// 						},
-	// 					};
-
-	// 					appSettings.setString("token", response.jwt);
-	// 					appSettings.setBoolean("auth", true);
-	// 					let toast = Toast.makeText(response.message).show();
-
-	// 					args.object.page.frame.navigate(navegation);
-	// 				});
-	// 		} else if (response.status === "WARNING") {
-	// 			dialogs.alert({
-	// 				title: "Error",
-	// 				message: `${response.message}`,
-	// 				okButtonText: "Ok",
-	// 			});
-	// 		} else {
-	// 			dialogs.alert({
-	// 				title: "Error",
-	// 				message: `Sucedio un error inesperado. ${response}`,
-	// 				okButtonText: "Ok",
-	// 			});
-	// 		}
-	// 	} else {
-	// 		// indicator.busy = false;
-	// 		main.addChild(loginSL);
-	// 	}
-	// };
-	// let URI = encodeURI(
-	// 	`${conectionLink}?nickname=${nickname.text}&password=${password.text}`
-	// );
-
-	// xhttp.open("GET", URI, true);
-	// xhttp.send();
 };
 
 exports.btnRegister = (args) => {
