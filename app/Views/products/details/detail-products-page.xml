@@ -1,8 +1,9 @@
 <Page xmlns="http://schemas.nativescript.org/tns.xsd" actionBarHidden="true" navigatingTo="onNavigatingTo">
     <StackLayout id="main" class="main">
-        <StackLayout id="info" class="card info"/>
+        <StackLayout id="carousel" class="card carousel" />
+
         <ScrollView orientation="vertical" class="card">
-            <DockLayout id="options" stretchLastChild="true" orientation="vertical" />
+            <DockLayout id="details" stretchLastChild="true" orientation="vertical" />
         </ScrollView>
     </StackLayout>
 </Page>

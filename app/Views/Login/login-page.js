@@ -4,11 +4,12 @@ const dialogs = require("tns-core-modules/ui/dialogs");
 const appSettings = require("tns-core-modules/application-settings");
 const Toast = require("nativescript-toast");
 const { Frame } = require("tns-core-modules/ui/frame");
-const { checkStatus, createActivityIndicator } = require("../../functions");
+const { checkStatus, createActivityIndicator, deleteSesion, parseJSON } = require("../../functions");
 
 function pageLoaded(args) {
 	var page = args.object;
 	page.bindingContext = loginViewModel;
+	deleteSesion();
 }
 
 exports.Login = async (args) => {
@@ -43,7 +44,7 @@ exports.Login = async (args) => {
 
 	await fetch(URI)
 		.then(checkStatus)
-		.then((resp) => resp.json())
+		.then(parseJSON)
 		.then((json) => {
 			if (json.status === "OK") {
 				dialogs
@@ -63,6 +64,7 @@ exports.Login = async (args) => {
 
 						appSettings.setString("token", json.jwt);
 						appSettings.setBoolean("auth", true);
+						console.log("Token:" + appSettings.getString("token"));
 						let toast = Toast.makeText(json.message).show();
 						indicator.busy = false;
 						args.object.page.frame.navigate(navegation);

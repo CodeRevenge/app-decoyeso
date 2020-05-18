@@ -3,26 +3,26 @@ const appSettings = require("tns-core-modules/application-settings");
 const { ActivityIndicator } = require("tns-core-modules/ui/activity-indicator");
 
 exports.checkStatus = (response) => {
-	console.log("CHECK STATUS: Status " + response.status);
 	if (response.status >= 200 && response.status < 300) {
+		// console.log("CHECK STATUS: Status " + response.status);
 		return response;
 	} else {
+		console.log("CHECK STATUS: Status " + response.status);
 		var error = new Error(response.statusText);
 		error.response = response;
 		throw error;
 	}
 };
 
-exports.parseJSON = (resp) => {
-	console.log("PARSING JSON");
-	return resp.json();
+exports.parseJSON = (body) => {
+	return body.json();
 };
 
 const _verifyToken = async () => {
 	const conectionLink = encodeURI(
 		appSettings.getString("backHost") + "sesion_activa.php"
 	);
-
+	
 	return await fetch(conectionLink, {
 		method: "GET", // or 'PUT'
 		headers: {
@@ -30,29 +30,30 @@ const _verifyToken = async () => {
 		},
 	})
 		.then(this.checkStatus)
-		.then(this.parseJSON)
-		.then((json) => {
-			console.log("JSON: " + JSON.stringify(json))
-			if (json.status === "OK") {
+		// .then(this.parseJSON)
+		.then((body) => body.json())
+		.then((data) => {
+			console.log("JSON: " + JSON.stringify(data));
+			if (data.status === "OK") {
 				return {
 					status: true,
 					id: 0,
-					role: json.role,
+					role: data.role,
 					message: "Sesión valida",
 				};
-			} else if (json.status === "TOKEN_EXPIRED") {
+			} else if (data.status === "TOKEN_EXPIRED") {
 				return {
 					status: false,
 					id: 1,
-					role: json.role,
+					role: data.role,
 					message: "La sesión ha expirado, vuelva a inicar sesión",
 				};
 			} else {
-				message = json.eMessage;
+				message = data.eMessage;
 				return {
 					status: false,
 					id: 2,
-					role: json.role,
+					role: data.role,
 					message: `Sucedio un error inesperado. ${message}`,
 				};
 			}

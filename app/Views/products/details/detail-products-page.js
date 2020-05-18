@@ -5,6 +5,7 @@ var dialogs = require("tns-core-modules/ui/dialogs");
 var { Frame } = require("tns-core-modules/ui/frame");
 const { Button } = require("tns-core-modules/ui/button");
 var detailsProductsViewModel = new DetailsProductsViewModel();
+const { Carousel } = require("nativescript-carousel");
 
 const {
 	verifyToken,
@@ -21,6 +22,11 @@ exports.onNavigatingTo = async (args) => {
 
 	const main = page.getViewById("main");
 	const indicator = createActivityIndicator();
+	const carousel = page.getViewById("carousel");
+	const details = page.getViewById("details");
+	main.removeChildren();
+	carousel.removeChildren();
+	details.removeChildren();
 	main.addChild(indicator);
 
 	const verifiedToken = await verifyToken();
@@ -32,12 +38,6 @@ exports.onNavigatingTo = async (args) => {
 			page.navigationContext.id;
 
 		console.log(conectionLink);
-
-		const infoCard = page.getViewById("info");
-		const options = page.getViewById("options");
-
-		infoCard.removeChildren();
-		options.removeChildren();
 
 		await fetch(conectionLink, {
 			method: "GET",
@@ -52,42 +52,47 @@ exports.onNavigatingTo = async (args) => {
 				if (json.status === "OK") {
 					indicator.busy = false;
 					main.removeChild(indicator);
-					const id = new Label();
-					id.text = json.data.id;
-					id.className = "title";
 
 					const name = new Label();
 					name.text = json.data.name;
-					name.className = "";
+					name.className = "name";
+					name.dock = "top";
 
 					const desc = new Label();
 					desc.text = json.data.descr;
-					desc.className = "";
+					desc.className = "description";
+					desc.dock = "top";
 
 					const value = new Label();
 					value.text = json.data.value.slice(0, -1);
-					value.className = "";
+					value.className = "value";
+					value.dock = "top";
 
-					const qnt = new Label();
-					qnt.text = json.data.qnt;
-					qnt.className = "";
+					const qty = new Label();
+					qty.text = json.data.quantity;
+					qty.className = "qty";
+					qty.dock = "top";
 
 					const date = new Label();
-					date.text = json.data.date;
+					date.text = json.data.introdate;
 					date.className = "";
+					date.dock = "top";
 
-					infoCard.addChild(id);
-					infoCard.addChild(name);
-					infoCard.addChild(desc);
-					infoCard.addChild(value);
-					infoCard.addChild(qnt);
-					infoCard.addChild(date);
+					console.log(json.data.introdate);
 
-					const newSale = new Button();
-					newSale.text = "Nueva Venta";
-					newSale.className = "btn btn-primary btn-sales";
-					newSale.on("tap", this.showInventory);
-					newSale.dock = "top";
+					details.addChild(name);
+					details.addChild(desc);
+					details.addChild(value);
+					details.addChild(qty);
+					details.addChild(date);
+
+					if (appSettings.getBoolean("activeSale")) {
+						const newSale = new Button();
+						newSale.text = "Agregar al carrito";
+						newSale.className = "btn btn-primary btn-sales";
+						newSale.on("tap", this.showInventory);
+						newSale.dock = "top";
+					}
 
 					const inventory = new Button();
 					inventory.text = "Ver inventario";
@@ -101,9 +106,9 @@ exports.onNavigatingTo = async (args) => {
 					logout.on("tap", this.closeSesion);
 					logout.dock = "bottom";
 
-					options.addChild(newSale);
-					options.addChild(inventory);
-					options.addChild(logout);
+					// options.addChild(newSale);
+					details.addChild(inventory);
+					details.addChild(logout);
 
 					if (verifiedToken.role > 1) {
 						const admin = new Button();
@@ -112,8 +117,10 @@ exports.onNavigatingTo = async (args) => {
 						admin.on("tap", this.adminPage);
 						admin.dock = "bottom";
 
-						options.addChild(admin);
+						details.addChild(admin);
 					}
+					main.addChild(carousel);
+					main.addChild(details);
 				} else if (json.status === "TOKEN_EXPIRED") {
 					dialogs
 						.alert({

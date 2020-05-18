@@ -1,10 +1,10 @@
 {
   "nativescript": {
     "id": "com.codekiller.decoyeso",
-    "tns-android": {
+    "tns-ios": {
       "version": "6.5.0"
     },
-    "tns-ios": {
+    "tns-android": {
       "version": "6.5.0"
     }
   },
@@ -13,6 +13,7 @@
   "repository": "<fill-your-repository-here>",
   "dependencies": {
     "@nativescript/theme": "~2.3.3",
+    "nativescript-carousel": "^6.1.1",
     "nativescript-toast": "^2.0.0",
     "tns-core-modules": "~6.5.0"
   },
