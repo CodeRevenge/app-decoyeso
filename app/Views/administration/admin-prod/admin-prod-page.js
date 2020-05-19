@@ -124,6 +124,13 @@ exports.onNavigatingTo = async (args) => {
 				};
 				Frame.topmost().navigate(navegation);
 			});
+	} else if (verifiedToken.id === 400) {
+		dialogs
+			.alert({
+				title: "Error",
+				message: `Sucedio un error inesperado. ${verifiedToken.message}`,
+				okButtonText: "Ok",
+			})
 	} else {
 		dialogs
 			.alert({
@@ -139,8 +146,8 @@ exports.onNavigatingTo = async (args) => {
 				};
 				try {
 					Frame.topmost().navigate(navegation);
-				} catch(e) {
-					console.error(e)
+				} catch (e) {
+					console.error(e);
 				}
 			});
 	}
@@ -155,22 +162,22 @@ exports.regProd = (args) => {
 	};
 	try {
 		Frame.topmost().navigate(navegation);
-	} catch(e) {
-		console.error(e)
+	} catch (e) {
+		console.error(e);
 	}
 };
 
 exports.modifyProducts = (args) => {
 	const navegation = {
-		moduleName: "Views/products/modify-product/modify-product",
+		moduleName: "Views/products/inventory/inventory-page",
 		transition: {
 			name: "slide",
 		},
 	};
 	try {
 		Frame.topmost().navigate(navegation);
-	} catch(e) {
-		console.error(e)
+	} catch (e) {
+		console.error(e);
 	}
 };
 

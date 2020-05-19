@@ -1,0 +1,37 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" actionBarHidden="true" navigatingTo="onNavigatingTo">
+
+    <StackLayout id="main" class="main">
+        <StackLayout class="card" visibility="collapsed" id="title">
+            <Label class="title title-m" text="Modificar producto"/>
+        </StackLayout>
+        <ScrollView id="details" orientation="vertical" class="card" visibility="collapsed">
+            <DockLayout stretchLastChild="true" orientation="vertical">
+                <StackLayout class="input-field" dock="top">
+                    <Label class="text-field-tag" text="Nombre"/>
+                    <TextField class="input" id="name" hint="Nombre"></TextField>
+                </StackLayout>
+
+                <StackLayout class="input-field" dock="top">
+                    <Label class="text-field-tag" text="Descripción"/>
+                    <TextView class="input" id="description" hint="Descripción detallada"></TextView>
+                </StackLayout>
+
+                <StackLayout class="input-field" dock="top">
+                    <Label class="text-field-tag" text="Precio"/>
+                    <TextField class="input" id="price" hint="Precio" keyboardType="number"></TextField>
+                </StackLayout>
+
+                <StackLayout class="input-field" dock="top">
+                    <Label class="text-field-tag" text="Cantidad"/>
+                    <TextField class="input" id="quantity" hint="Cantidad" keyboardType="integer"></TextField>
+                </StackLayout>
+
+                <StackLayout id="statusContainer" class="input-field" dock="top">
+                    <Label class="text-field-tag" text="Estado"/>
+                </StackLayout>
+
+                <Button text="Guardar cambios" class="btn btn-primary" tap="saveChanges" dock="top"></Button>
+            </DockLayout >
+        </ScrollView>
+    </StackLayout>
+</Page>

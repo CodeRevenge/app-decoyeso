@@ -9,6 +9,8 @@ const appSettings = require("tns-core-modules/application-settings");
 const { Frame } = require("tns-core-modules/ui/frame");
 const Toast = require("nativescript-toast");
 
+var modifiying = false;
+
 const {
 	verifyToken,
 	deleteSesion,
@@ -20,8 +22,6 @@ const {
 exports.onNavigatingTo = async (args) => {
 	var page = args.object;
 	page.bindingContext = inventoryViewModel;
-
-	const inventory = args.object;
 
 	const main = page.getViewById("main");
 	const indicator = createActivityIndicator();
@@ -40,7 +40,12 @@ exports.onNavigatingTo = async (args) => {
 			appSettings.getString("backHost") + "lista_inventario.php"
 		);
 
-		await fetch(conectionLink)
+		await fetch(conectionLink, {
+			method: "GET",
+			headers: {
+				TOKEN: appSettings.getString("token"),
+			},
+		})
 			.then(checkStatus)
 			.then(parseJSON)
 			.then((json) => {
@@ -61,6 +66,7 @@ exports.onNavigatingTo = async (args) => {
 				main.removeChild(indicator);
 				searchBar.visibility = "visible";
 				dockList.visibility = "visible";
+				main.getViewById("title").visibility = "visible";
 			});
 	} else if (verifiedToken.id === 1) {
 		dialogs
@@ -106,7 +112,11 @@ exports.onItemTap = (args) => {
 			id,
 		},
 	};
-	Frame.topmost().navigate(navegation);
+	try {
+		Frame.topmost().navigate(navegation);
+	} catch (e) {
+		console.error(e);
+	}
 };
 
 exports.filteringProducts = (search) => {
@@ -155,7 +165,12 @@ exports.onPullToRefreshInitiated = async (args) => {
 			appSettings.getString("backHost") + "lista_inventario.php"
 		);
 
-		await fetch(conectionLink)
+		await fetch(conectionLink, {
+			method: "GET",
+			headers: {
+				TOKEN: appSettings.getString("token"),
+			},
+		})
 			.then(checkStatus)
 			.then(parseJSON)
 			.then((json) => {

@@ -52,6 +52,12 @@ Page {
   border-radius: 15px;
 }
 
+.card-block {
+  vertical-align: center;
+  margin: 15px;
+  width: 350;
+}
+
 .title {
   font-size: 45 ;
   text-align: center;

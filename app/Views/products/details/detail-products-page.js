@@ -23,11 +23,10 @@ exports.onNavigatingTo = async (args) => {
 	const indicator = createActivityIndicator();
 	const carousel = page.getViewById("carousel");
 	const details = page.getViewById("details");
+	const buttons = page.getViewById("buttons");
 	const myCarousel = new Carousel();
 	carousel.removeChildren();
 	main.addChild(indicator);
-	main.removeChild(details);
-	main.removeChild(carousel);
 
 	const verifiedToken = await verifyToken();
 
@@ -50,12 +49,8 @@ exports.onNavigatingTo = async (args) => {
 			.then((json) => {
 				console.log("JSON Produc: " + JSON.stringify(json));
 				if (json.status === "OK") {
-
-
 					indicator.busy = false;
 					main.removeChild(indicator);
-
-					
 
 					const name = details.getViewById("name");
 					name.text = json.data.name;
@@ -70,48 +65,21 @@ exports.onNavigatingTo = async (args) => {
 					qty.text = json.data.quantity + " piezas";
 
 					const date = details.getViewById("date");
-					date.text = json.data.introdate;
+					date.text = json.data.updated;
 
-					console.log(json.data.introdate);
+					const id = details.getViewById("idProd");
+					id.text = json.data.id;
 
-					main.addChild(carousel);
-					main.addChild(details);
-
-					if (appSettings.getBoolean("activeSale")) {
-						const newSale = new Button();
-						newSale.text = "Agregar al carrito";
-						newSale.className = "btn btn-primary btn-sales";
-						newSale.on("tap", this.showInventory);
-						newSale.dock = "top";
+					details.visibility = "visible";
+					carousel.visibility = "visible";
+					buttons.visibility = "visible";
+					const addCart = buttons.getViewById("addCart");
+					addCart.visibility = "visible";
+					if (verifiedToken.role > 1) {
+						buttons.getViewById("modify").visibility = "visible";
+					} else {
+						addCart.colSpan = 2;
 					}
-
-					// if (verifiedToken.role > 1) {
-					// 	const inventory = new Button();
-					// 	inventory.text = "Ver inventario";
-					// 	inventory.className = "btn btn-primary";
-					// 	inventory.on("tap", this.showInventory);
-					// 	inventory.dock = "top";
-
-					// 	const logout = new Button();
-					// 	logout.text = "Cerrar Sesión";
-					// 	logout.className = "btn btn-secundary";
-					// 	logout.on("tap", this.closeSesion);
-					// 	logout.dock = "bottom";
-					// }
-
-					// // options.addChild(newSale);
-					// // details.addChild(inventory);
-					// // details.addChild(logout);
-
-					// if (verifiedToken.role > 1) {
-					// 	const admin = new Button();
-					// 	admin.text = "Administrador";
-					// 	admin.className = "btn btn-primary";
-					// 	admin.on("tap", this.adminPage);
-					// 	admin.dock = "bottom";
-
-					// 	// details.addChild(admin);
-					// }
 				} else if (json.status === "TOKEN_EXPIRED") {
 					dialogs
 						.alert({
@@ -151,12 +119,11 @@ exports.onNavigatingTo = async (args) => {
 			.then((data) => data)
 			.catch((err) => {
 				console.error("Petición fallida (Main): ", err);
-				dialogs
-					.alert({
-						title: "Error",
-						message: `Sucedio un error inesperado. ${err}`,
-						okButtonText: "Ok",
-					})
+				dialogs.alert({
+					title: "Error",
+					message: `Sucedio un error inesperado. ${err}`,
+					okButtonText: "Ok",
+				});
 			});
 	} else if (verifiedToken.id === 1) {
 		dialogs
@@ -173,6 +140,12 @@ exports.onNavigatingTo = async (args) => {
 				};
 				Frame.topmost().navigate(navegation);
 			});
+	} else if (verifiedToken.id === 404) {
+		dialogs.alert({
+			title: "Error",
+			message: `Sucedio un error inesperado. ${verifiedToken.message}`,
+			okButtonText: "Ok",
+		});
 	} else {
 		dialogs
 			.alert({
@@ -192,55 +165,20 @@ exports.onNavigatingTo = async (args) => {
 	}
 };
 
-exports.adminPage = (args) => {
+exports.modifyProduct = (args) => {
+	const id = args.object.page.getViewById("details").getViewById("idProd").text;
 	const navegation = {
-		moduleName: "Views/administration/admin-page",
+		moduleName: "Views/products/modify-product/modify-product",
 		transition: {
 			name: "slide",
 		},
-	};
-	args.object.page.frame.navigate(navegation);
-};
-
-exports.regProd = (args) => {
-	const navegation = {
-		moduleName: "Views/register-product/register-product",
-		transition: {
-			name: "slide",
+		context: {
+			id,
 		},
 	};
-	args.object.page.frame.navigate(navegation);
+	try {
+		Frame.topmost().navigate(navegation);
+	} catch (e) {
+		console.error(e);
+	}
 };
-
-exports.showInventory = (args) => {
-	const navegation = {
-		moduleName: "Views/inventory/inventory-page",
-		transition: {
-			name: "slide",
-		},
-	};
-	Frame.topmost().navigate(navegation);
-};
-
-exports.closeSesion = (args) => {
-	dialogs
-		.confirm({
-			title: "Error",
-			message: "Seguro que desea cerrar seción",
-			okButtonText: "Salir",
-			cancelButtonText: "Cancelar",
-		})
-		.then(function (result) {
-			if (result) {
-				deleteSesion();
-
-				const navegation = {
-					moduleName: "Views/login/login-page",
-					clearHistory: true,
-				};
-				args.object.page.frame.navigate(navegation);
-			}
-		});
-};
-
-exports.showMoreInfo = (args) => {};

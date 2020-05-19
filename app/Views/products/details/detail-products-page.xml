@@ -2,7 +2,7 @@
     xmlns:nc="nativescript-carousel">
     <StackLayout id="main" class="main">
 
-        <GridLayout id="carousel" class="card carousel">
+        <GridLayout id="carousel" class="card carousel" visibility="collapsed">
             <nc:Carousel debug="true" color="white" pageChanged="myChangeEvent" pageTapped="mySelectedEvent" indicatorColor="#fff000" finite="false" showIndicator="true" android:indicatorAnimation="swap" indicatorOffset="0, -30" height="100%">
 
                 <nc:CarouselItem id="slide1" verticalAlignment="middle">
@@ -31,7 +31,8 @@
             </nc:Carousel>
         </GridLayout>
 
-        <GridLayout id="details" columns="3*, *" rows="auto, auto, *, auto" height="300" class="card">
+        <GridLayout id="details" columns="3*, *" rows="auto, auto, *, auto" height="300" class="card" visibility="collapsed">
+            <Label id="idProd" row="3" col="1" />
             <Label id="name" row="0" col="0" colSpan="4" class="name"/>
             <Label id="value" row="1" col="0" colSpan="2" class="value"/>
             <Label id="qty" class="qty" row="1" col="4"/>
@@ -41,6 +42,11 @@
                 </StackLayout>
             </ScrollView>
             <Label id="date" row="3" col="0" colSpan="2" class="date"/>
+        </GridLayout>
+
+        <GridLayout columns="*, *" rows="*" visibility="collapsed" id="buttons" class="card-block">
+            <Button col="0" row="0" text="Agregar al carrito" tap="" id="addCart" visibility="collapsed" />
+            <Button col="1" row="0" text="Modificar" tap="modifyProduct" id="modify" visibility="collapsed" />
         </GridLayout>
     </StackLayout>
 </Page>

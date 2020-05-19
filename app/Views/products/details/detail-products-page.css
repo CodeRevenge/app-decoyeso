@@ -63,3 +63,21 @@
   background: linear-gradient(tobottom, #003973, #e5e5be);
   vertical-align: center;
 }
+
+#addCart {
+  font-size: 20px;
+  padding: 15 0 15 0;
+  height: 55;
+  width: 550;
+  background-color: #265e4a;
+  color: white;
+}
+
+#modify {
+  font-size: 20px;
+  padding: 15 0 15 0;
+  height: 55;
+  width: 550;
+  background-color: #2f5c6e;
+  color: white;
+}

@@ -2,8 +2,8 @@
     xmlns:lv="nativescript-ui-listview">
 
     <StackLayout id="main" class="main">
-        <Label text="Inventario" class="card title" />
-        <SearchBar id="searchBar" class="card search" hint="Buscar" clear="onClear" submit="onSubmit" visibility="collapsed"/>
+        <Label id="title" text="Inventario" class="card title" visibility="collapsed"/>
+        <SearchBar id="searchBar" class="card search" hint="Buscar" clear="onClear" submit="onSubmit" visibility="collapsed" textFieldHintColor="whitesmoke"/>
         <DockLayout stretchLastChild="true" orientation="vertical" id="inventoriDock" visibility="collapsed">
 
             <lv:RadListView id="inventoryList" class="card" style="height:1250px" dock="top" itemTap="onItemTap" pullToRefresh="true" pullToRefreshInitiated="onPullToRefreshInitiated">

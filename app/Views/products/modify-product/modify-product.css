@@ -5,3 +5,10 @@
 .space {
   margin: 15 0 10 0;
 }
+
+.picker {
+  width: 300;
+  height: 80;
+  vertical-align: middle;
+  font-size: 40;
+}

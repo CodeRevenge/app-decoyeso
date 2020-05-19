@@ -22,7 +22,7 @@ const _verifyToken = async () => {
 	const conectionLink = encodeURI(
 		appSettings.getString("backHost") + "sesion_activa.php"
 	);
-	console.log("")
+	console.log("");
 	return await fetch(conectionLink, {
 		method: "GET", // or 'PUT'
 		headers: {
@@ -58,6 +58,15 @@ const _verifyToken = async () => {
 		})
 		.then((data) => data)
 		.catch((err) => {
+			if (err.response.status === 400) {
+				console.error("Petición fallida (Token Ver): ", err);
+				return {
+					status: false,
+					id: 404,
+					message: err,
+					respStatus: err.response.status,
+				};
+			}
 			console.error("Petición fallida (Token Ver): ", err);
 			return {
 				status: false,
