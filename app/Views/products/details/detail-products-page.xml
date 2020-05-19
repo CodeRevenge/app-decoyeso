@@ -1,9 +1,46 @@
-<Page xmlns="http://schemas.nativescript.org/tns.xsd" actionBarHidden="true" navigatingTo="onNavigatingTo">
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" actionBarHidden="true" navigatingTo="onNavigatingTo" 
+    xmlns:nc="nativescript-carousel">
     <StackLayout id="main" class="main">
-        <StackLayout id="carousel" class="card carousel" />
 
-        <ScrollView orientation="vertical" class="card">
-            <DockLayout id="details" stretchLastChild="true" orientation="vertical" />
-        </ScrollView>
+        <GridLayout id="carousel" class="card carousel">
+            <nc:Carousel debug="true" color="white" pageChanged="myChangeEvent" pageTapped="mySelectedEvent" indicatorColor="#fff000" finite="false" showIndicator="true" android:indicatorAnimation="swap" indicatorOffset="0, -30" height="100%">
+
+                <nc:CarouselItem id="slide1" verticalAlignment="middle">
+                    <Label text="Each slide is defined in the XML" textWrap="true" margin="30" />
+                    <Label text="Slide 1" backgroundColor="#50000000" horizontalAlignment="center"></Label>
+
+                    <Label text="Wrap the Carousel in a GridLayout in order to place the indicator on top (android)" textWrap="true" margin="30" ios:visibility="collapsed"/>
+                </nc:CarouselItem>
+
+                <nc:CarouselItem id="slide2" verticalAlignment="middle">
+                    <Label text="'finite' is set to False. Carousel will not stop at the last slide" textWrap="true" margin="30" android:visibility="collapsed" />
+                    <Label text="Indicator animation type: 'swap'" textWrap="true" margin="50" ios:visibility="collapsed" />
+                    <Label text="Slide 2" backgroundColor="#50000000" horizontalAlignment="center"></Label>
+                </nc:CarouselItem>
+
+                <nc:CarouselItem id="slide3" verticalAlignment="middle">
+                    <Label text="Carousel can be used in fullscreen, just set height to 100%" textWrap="true" margin="30"/>
+                    <Label text="Slide 3" backgroundColor="#50000000" horizontalAlignment="center"></Label>
+                </nc:CarouselItem>
+
+                <nc:CarouselItem id="slide4" verticalAlignment="middle">
+                    <Label text="Enjoy using the Carousel plugin :)" textWrap="true" margin="30"/>
+                    <Label text="Slide 4" backgroundColor="#50000000" horizontalAlignment="center"></Label>
+                </nc:CarouselItem>
+
+            </nc:Carousel>
+        </GridLayout>
+
+        <GridLayout id="details" columns="3*, *" rows="auto, auto, *, auto" height="300" class="card">
+            <Label id="name" row="0" col="0" colSpan="4" class="name"/>
+            <Label id="value" row="1" col="0" colSpan="2" class="value"/>
+            <Label id="qty" class="qty" row="1" col="4"/>
+            <ScrollView orientation="vertical" row="2" col="0" colSpan="2">
+                <StackLayout orientation="vertical">
+                    <Label id="desc" class="desc" textWrap="true"/>
+                </StackLayout>
+            </ScrollView>
+            <Label id="date" row="3" col="0" colSpan="2" class="date"/>
+        </GridLayout>
     </StackLayout>
 </Page>

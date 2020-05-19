@@ -15,13 +15,14 @@ exports.onNavigatingTo = async (args) => {
 	const verifiedToken = await verifyToken();
 
 	if (verifiedToken.id === 0) {
-		const conectionLink = appSettings.getString("backHost") + "empleado_info.php";
+		const conectionLink =
+			appSettings.getString("backHost") + "empleado_info.php";
 
 		const infoCard = page.getViewById("info");
 		const options = page.getViewById("options");
 
 		infoCard.removeChildren();
-    options.removeChildren();
+		options.removeChildren();
 
 		await fetch(conectionLink, {
 			method: "GET", // or 'PUT'
@@ -46,13 +47,13 @@ exports.onNavigatingTo = async (args) => {
 					const registerProds = new Button();
 					registerProds.text = "Registrar nuevo producto";
 					registerProds.className = "btn btn-primary";
-					registerProds.on("tap", this.backButton);
+					registerProds.on("tap", this.regProd);
 					registerProds.dock = "top";
 
 					const updateProd = new Button();
-					updateProd.text = "Modificar inventario";
+					updateProd.text = "Modificar producto";
 					updateProd.className = "btn btn-primary";
-					updateProd.on("tap", this.backButton);
+					updateProd.on("tap", this.modifyProducts);
 					updateProd.dock = "top";
 
 					const delProds = new Button();
@@ -136,29 +137,41 @@ exports.onNavigatingTo = async (args) => {
 				const navegation = {
 					moduleName: "Views/login/login-page",
 				};
-				Frame.topmost().navigate(navegation);
+				try {
+					Frame.topmost().navigate(navegation);
+				} catch(e) {
+					console.error(e)
+				}
 			});
 	}
 };
 
 exports.regProd = (args) => {
 	const navegation = {
-		moduleName: "Views/register-product/register-product",
+		moduleName: "Views/products/register-product/register-product",
 		transition: {
 			name: "slide",
 		},
 	};
-	args.object.page.frame.navigate(navegation);
+	try {
+		Frame.topmost().navigate(navegation);
+	} catch(e) {
+		console.error(e)
+	}
 };
 
-exports.adminProducts = (args) => {
+exports.modifyProducts = (args) => {
 	const navegation = {
-		moduleName: "Views/inventory/inventory-page",
+		moduleName: "Views/products/modify-product/modify-product",
 		transition: {
 			name: "slide",
 		},
 	};
-	args.object.page.frame.navigate(navegation);
+	try {
+		Frame.topmost().navigate(navegation);
+	} catch(e) {
+		console.error(e)
+	}
 };
 
 exports.backButton = (args) => {

@@ -1,0 +1,35 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" actionBarHidden="true" navigatingTo="onNavigatingTo" 
+    xmlns:lv="nativescript-ui-listview">
+
+    <StackLayout id="main" class="main">
+        <Label text="Inventario" class="card title" />
+        <SearchBar id="searchBar" class="card search" hint="Buscar" clear="onClear" submit="onSubmit" visibility="collapsed"/>
+        <DockLayout stretchLastChild="true" orientation="vertical" id="inventoriDock" visibility="collapsed">
+
+            <lv:RadListView id="inventoryList" class="card" style="height:1250px" dock="top" itemTap="onItemTap" pullToRefresh="true" pullToRefreshInitiated="onPullToRefreshInitiated">
+                <lv:RadListView.pullToRefreshStyle>
+                    <lv:PullToRefreshStyle indicatorColor="white" indicatorBackgroundColor="blue"/>
+                </lv:RadListView.pullToRefreshStyle>
+                <lv:RadListView.headerItemTemplate>
+                    <StackLayout orientation="horizontal" class="col-titles" dock="top">
+                        <Label text="ID" class="col-title" />
+                        <Label text="Nombre" class="col-title" />
+                        <Label text="Cantidad" class="col-title" />
+                        <Label text="Costo" class="col-title" />
+                    </StackLayout>
+                </lv:RadListView.headerItemTemplate>
+                <lv:RadListView.itemTemplate>
+                    <FlexboxLayout flexDirection="row">
+                        <Label text="{{ id || 'Cargando...' }}" id="id" class="id" horizontalAlignment="left" style="width: 15%" />
+                        <Label text="{{ name || 'Cargando...' }}" id="name" class="name" horizontalAlignment="left" style="width: 40%" />
+                        <Label text="{{ quantity  || 'Cargando...' }}" class="qnty" verticalAlignment="center" style="width: 15%" />
+                        <Label text="{{ value || 'Cargando...'  }}" class="cost" verticalAlignment="center" style="width: 25%" />
+                    </FlexboxLayout>
+                </lv:RadListView.itemTemplate>
+            </lv:RadListView>
+
+            <Button text="Atras" class="btn btn-primary" tap="Back" dock="bottom"></Button>
+        </DockLayout >
+
+    </StackLayout>
+</Page>

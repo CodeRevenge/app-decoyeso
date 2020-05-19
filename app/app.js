@@ -12,7 +12,6 @@ appSettings.setString(
 	"http://deco-yeso.000webhostapp.com/decoyeso/"
 );
 // appSettings.setString("backHost", "localhost/backend-decoyeso/")
-console.log(appSettings.getString("backHost"));
 
 if (!appSettings.getBoolean("auth")) {
 	console.log("No auth");

@@ -67,7 +67,7 @@ exports.Login = async (args) => {
 						console.log("Token:" + appSettings.getString("token"));
 						let toast = Toast.makeText(json.message).show();
 						indicator.busy = false;
-						args.object.page.frame.navigate(navegation);
+						Frame.topmost().navigate(navegation);
 					});
 			} else if (json.status === "WARNING") {
 				dialogs

@@ -16,7 +16,6 @@ const {
 } = require("../../../functions");
 
 exports.onNavigatingTo = async (args) => {
-	console.log("OK");
 	const page = args.object;
 	page.bindingContext = detailsProductsViewModel;
 
@@ -24,14 +23,15 @@ exports.onNavigatingTo = async (args) => {
 	const indicator = createActivityIndicator();
 	const carousel = page.getViewById("carousel");
 	const details = page.getViewById("details");
-	main.removeChildren();
+	const myCarousel = new Carousel();
 	carousel.removeChildren();
-	details.removeChildren();
 	main.addChild(indicator);
+	main.removeChild(details);
+	main.removeChild(carousel);
 
 	const verifiedToken = await verifyToken();
 
-	if (verifiedToken.id === 0) {
+	if (verifiedToken.status) {
 		const conectionLink =
 			appSettings.getString("backHost") +
 			"detalles_producto.php?id=" +
@@ -50,41 +50,32 @@ exports.onNavigatingTo = async (args) => {
 			.then((json) => {
 				console.log("JSON Produc: " + JSON.stringify(json));
 				if (json.status === "OK") {
+
+
 					indicator.busy = false;
 					main.removeChild(indicator);
 
-					const name = new Label();
+					
+
+					const name = details.getViewById("name");
 					name.text = json.data.name;
-					name.className = "name";
-					name.dock = "top";
 
-					const desc = new Label();
+					const desc = details.getViewById("desc");
 					desc.text = json.data.descr;
-					desc.className = "description";
-					desc.dock = "top";
 
-					const value = new Label();
-					value.text = json.data.value.slice(0, -1);
-					value.className = "value";
-					value.dock = "top";
+					const value = details.getViewById("value");
+					value.text = "$" + json.data.value.slice(0, -1);
 
-					const qty = new Label();
-					qty.text = json.data.quantity;
-					qty.className = "qty";
-					qty.dock = "top";
+					const qty = details.getViewById("qty");
+					qty.text = json.data.quantity + " piezas";
 
-					const date = new Label();
+					const date = details.getViewById("date");
 					date.text = json.data.introdate;
-					date.className = "";
-					date.dock = "top";
 
 					console.log(json.data.introdate);
 
-					details.addChild(name);
-					details.addChild(desc);
-					details.addChild(value);
-					details.addChild(qty);
-					details.addChild(date);
+					main.addChild(carousel);
+					main.addChild(details);
 
 					if (appSettings.getBoolean("activeSale")) {
 						const newSale = new Button();
@@ -94,33 +85,33 @@ exports.onNavigatingTo = async (args) => {
 						newSale.dock = "top";
 					}
 
-					const inventory = new Button();
-					inventory.text = "Ver inventario";
-					inventory.className = "btn btn-primary";
-					inventory.on("tap", this.showInventory);
-					inventory.dock = "top";
+					// if (verifiedToken.role > 1) {
+					// 	const inventory = new Button();
+					// 	inventory.text = "Ver inventario";
+					// 	inventory.className = "btn btn-primary";
+					// 	inventory.on("tap", this.showInventory);
+					// 	inventory.dock = "top";
 
-					const logout = new Button();
-					logout.text = "Cerrar Sesión";
-					logout.className = "btn btn-secundary";
-					logout.on("tap", this.closeSesion);
-					logout.dock = "bottom";
+					// 	const logout = new Button();
+					// 	logout.text = "Cerrar Sesión";
+					// 	logout.className = "btn btn-secundary";
+					// 	logout.on("tap", this.closeSesion);
+					// 	logout.dock = "bottom";
+					// }
 
-					// options.addChild(newSale);
-					details.addChild(inventory);
-					details.addChild(logout);
+					// // options.addChild(newSale);
+					// // details.addChild(inventory);
+					// // details.addChild(logout);
 
-					if (verifiedToken.role > 1) {
-						const admin = new Button();
-						admin.text = "Administrador";
-						admin.className = "btn btn-primary";
-						admin.on("tap", this.adminPage);
-						admin.dock = "bottom";
+					// if (verifiedToken.role > 1) {
+					// 	const admin = new Button();
+					// 	admin.text = "Administrador";
+					// 	admin.className = "btn btn-primary";
+					// 	admin.on("tap", this.adminPage);
+					// 	admin.dock = "bottom";
 
-						details.addChild(admin);
-					}
-					main.addChild(carousel);
-					main.addChild(details);
+					// 	// details.addChild(admin);
+					// }
 				} else if (json.status === "TOKEN_EXPIRED") {
 					dialogs
 						.alert({
@@ -166,15 +157,6 @@ exports.onNavigatingTo = async (args) => {
 						message: `Sucedio un error inesperado. ${err}`,
 						okButtonText: "Ok",
 					})
-					.then(() => {
-						deleteSesion();
-						console.log(appSettings.getString("token"));
-						const navegation = {
-							moduleName: "Views/login/login-page",
-							clearHistory: true,
-						};
-						Frame.topmost().navigate(navegation);
-					});
 			});
 	} else if (verifiedToken.id === 1) {
 		dialogs

@@ -10,23 +10,56 @@
   text-align: center;
 }
 
-.nickname {
-  padding: 0;
-  text-align: center;
-  color: rgb(73, 61, 128);
-  font-size: 25px;
+.carousel {
+  height: 300;
 }
 
-.role {
-  padding: 0;
-  text-align: center;
-  color: rgb(45, 41, 65);
-  font-size: 30px;
-  padding-bottom: 10px;
-}
 
 .btn-sales {
   height: 250px;
   color: rgb(11, 83, 112);
   background-color: rgb(103, 240, 85);
+}
+
+.name {
+  color: rgb(36, 36, 168);
+  font-size: 30px;
+}
+
+
+.value {
+  color: green;
+  font-size: 25px;
+}
+
+.qty {
+  font-size: 18px;
+}
+
+.desc {
+  font-size: 18px;
+}
+
+.date {
+  font-size: 15px;
+}
+
+#slide1 {
+  background: linear-gradient(45deg, #eb3349, #f45c43);
+  vertical-align: center;
+}
+
+#slide2 {
+  background: linear-gradient(-45deg, #1d976c, #93f9b9);
+  vertical-align: center;
+}
+
+#slide3 {
+  background: linear-gradient(45deg, #1d2b64, #f8cdda);
+  vertical-align: center;
+}
+
+#slide4 {
+  background: linear-gradient(tobottom, #003973, #e5e5be);
+  vertical-align: center;
 }

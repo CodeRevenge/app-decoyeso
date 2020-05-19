@@ -1,5 +1,5 @@
-var RegisterViewModel = require("./register-product-model");
-var registerViewModel = new RegisterViewModel();
+var ModifyProductViewModel = require("./modify-product-model");
+var modifyViewModel = new ModifyProductViewModel();
 const appSettings = require("tns-core-modules/application-settings");
 const dialogs = require("tns-core-modules/ui/dialogs");
 var { Frame } = require("tns-core-modules/ui/frame");
@@ -10,9 +10,9 @@ const {
 	checkStatus,
 } = require("../../../functions");
 
-exports.onNavigatingTo = async (args) => {
+exports.pageLoaded = async (args) => {
 	var page = args.object;
-	page.bindingContext = registerViewModel;
+	page.bindingContext = modifyViewModel;
 
 	const verifiedToken = await verifyToken();
 	if (verifiedToken.id === 1) {

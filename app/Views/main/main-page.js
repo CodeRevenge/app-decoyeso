@@ -13,6 +13,8 @@ const {
 	verifyToken,
 	deleteSesion,
 	createActivityIndicator,
+	parseJSON,
+	checkStatus,
 } = require("../../functions");
 
 exports.onNavigatingTo = async (args) => {
@@ -22,14 +24,11 @@ exports.onNavigatingTo = async (args) => {
 	const main = page.getViewById("main");
 	const indicator = createActivityIndicator();
 	main.addChild(indicator);
-
 	const verifiedToken = await verifyToken();
 
 	if (verifiedToken.id === 0) {
 		const conectionLink =
 			appSettings.getString("backHost") + "empleado_info.php";
-
-		console.log(conectionLink);
 
 		const infoCard = page.getViewById("info");
 		const options = page.getViewById("options");
@@ -43,13 +42,9 @@ exports.onNavigatingTo = async (args) => {
 				TOKEN: appSettings.getString("token"),
 			},
 		})
-			.then(async (resp) => {
-				if (resp.ok) {
-					return await resp.json();
-				}
-			})
+			.then(checkStatus)
+			.then(parseJSON)
 			.then((json) => {
-				console.log("JSON User: " + JSON.stringify(json));
 				if (json.status === "OK") {
 					indicator.busy = false;
 					main.removeChild(indicator);
@@ -211,12 +206,16 @@ exports.regProd = (args) => {
 
 exports.showInventory = (args) => {
 	const navegation = {
-		moduleName: "Views/inventory/inventory-page",
+		moduleName: "Views/products/inventory/inventory-page",
 		transition: {
 			name: "slide",
 		},
 	};
-	Frame.topmost().navigate(navegation);
+	try {
+		Frame.topmost().navigate(navegation);
+	} catch (e) {
+		console.error(e);
+	}
 };
 
 exports.closeSesion = (args) => {

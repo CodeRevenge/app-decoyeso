@@ -22,7 +22,7 @@ const _verifyToken = async () => {
 	const conectionLink = encodeURI(
 		appSettings.getString("backHost") + "sesion_activa.php"
 	);
-	
+	console.log("")
 	return await fetch(conectionLink, {
 		method: "GET", // or 'PUT'
 		headers: {
@@ -30,10 +30,8 @@ const _verifyToken = async () => {
 		},
 	})
 		.then(this.checkStatus)
-		// .then(this.parseJSON)
-		.then((body) => body.json())
+		.then(this.parseJSON)
 		.then((data) => {
-			console.log("JSON: " + JSON.stringify(data));
 			if (data.status === "OK") {
 				return {
 					status: true,
