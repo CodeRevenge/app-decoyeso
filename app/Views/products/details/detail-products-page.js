@@ -6,7 +6,10 @@ var { Frame } = require("tns-core-modules/ui/frame");
 const { Button } = require("tns-core-modules/ui/button");
 var detailsProductsViewModel = new DetailsProductsViewModel();
 const { Carousel } = require("nativescript-carousel");
-
+const { ObservableArray } = require("tns-core-modules/data/observable-array");
+var photoViewerModule = require("nativescript-photoviewer");
+const moment = require("moment");
+moment.locale("es");
 const {
 	verifyToken,
 	deleteSesion,
@@ -15,17 +18,48 @@ const {
 	checkStatus,
 } = require("../../../functions");
 
+var items = new ObservableArray([
+	{
+		title: "Slide 1",
+		color: "#b3cde0",
+		image:
+			"https://github.com/manijak/nativescript-photoviewer/raw/master/demo/app/res/01.jpg",
+	},
+	{
+		title: "Slide 2",
+		color: "#6497b1",
+		image:
+			"https://github.com/manijak/nativescript-photoviewer/raw/master/demo/app/res/02.jpg",
+	},
+	{
+		title: "Slide 3",
+		color: "#005b96",
+		image:
+			"https://github.com/manijak/nativescript-photoviewer/raw/master/demo/app/res/03.jpg",
+	},
+	{
+		title: "Slide 4",
+		color: "#03396c",
+		image:
+			"https://github.com/manijak/nativescript-photoviewer/raw/master/demo/app/res/04.jpg",
+	},
+]);
+
+exports.pageLoaded = (args) => {
+	var page = args.object;
+	page.bindingContext = detailsProductsViewModel;
+
+	detailsProductsViewModel.set("myData", items);
+};
+
 exports.onNavigatingTo = async (args) => {
 	const page = args.object;
-	page.bindingContext = detailsProductsViewModel;
 
 	const main = page.getViewById("main");
 	const indicator = createActivityIndicator();
 	const carousel = page.getViewById("carousel");
 	const details = page.getViewById("details");
 	const buttons = page.getViewById("buttons");
-	const myCarousel = new Carousel();
-	carousel.removeChildren();
 	main.addChild(indicator);
 
 	const verifiedToken = await verifyToken();
@@ -65,10 +99,18 @@ exports.onNavigatingTo = async (args) => {
 					qty.text = json.data.quantity + " piezas";
 
 					const date = details.getViewById("date");
-					date.text = json.data.updated;
+
+					date.text =
+						"Ultima actualización " +
+						moment(json.data.updated, "YYYY-MM-DD HH:mm:ss", false)
+							.subtract(5, "hours")
+							.fromNow();
 
 					const id = details.getViewById("idProd");
-					id.text = json.data.id;
+					id.text = "ID " + json.data.id;
+
+					const status = details.getViewById("status");
+					status.text = json.statusList[json.data.status].name;
 
 					details.visibility = "visible";
 					carousel.visibility = "visible";
@@ -165,8 +207,37 @@ exports.onNavigatingTo = async (args) => {
 	}
 };
 
+exports.showImages = (args) => {
+	try {
+		const myCarousel = args.object.page.getViewById("imageCarousel");
+		const photoViewer = new photoViewerModule.PhotoViewer();
+
+		var photoviewerOptions = {
+			startIndex: myCarousel.selectedPage,
+			android: {
+				paletteType: photoViewerModule.PaletteType.DarkVibrant,
+				showAlbum: false,
+			},
+		};
+
+		photoViewer
+			.showGallery(
+				items.map((x) => x.image),
+				photoviewerOptions
+			)
+			.then((args) => {
+				console.log("Gallery closed...");
+			});
+	} catch (e) {
+		console.error(e);
+	}
+};
+
 exports.modifyProduct = (args) => {
-	const id = args.object.page.getViewById("details").getViewById("idProd").text;
+	const id = args.object.page
+		.getViewById("details")
+		.getViewById("idProd")
+		.text.split(" ")[1];
 	const navegation = {
 		moduleName: "Views/products/modify-product/modify-product",
 		transition: {

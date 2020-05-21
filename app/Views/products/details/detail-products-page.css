@@ -11,7 +11,13 @@
 }
 
 .carousel {
-  height: 300;
+  height: 280;
+}
+
+.imgDesc{
+  font-size: 25;
+  text-align: center;
+  width: 200;
 }
 
 

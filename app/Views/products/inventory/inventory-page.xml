@@ -2,7 +2,7 @@
     xmlns:lv="nativescript-ui-listview">
 
     <StackLayout id="main" class="main">
-        <Label id="title" text="Inventario" class="card title" visibility="collapsed"/>
+        <Label id="title" text="Inventario" class="card page-title" visibility="collapsed"/>
         <SearchBar id="searchBar" class="card search" hint="Buscar" clear="onClear" submit="onSubmit" visibility="collapsed" textFieldHintColor="whitesmoke"/>
         <DockLayout stretchLastChild="true" orientation="vertical" id="inventoriDock" visibility="collapsed">
 
@@ -11,24 +11,25 @@
                     <lv:PullToRefreshStyle indicatorColor="white" indicatorBackgroundColor="blue"/>
                 </lv:RadListView.pullToRefreshStyle>
                 <lv:RadListView.headerItemTemplate>
-                    <StackLayout orientation="horizontal" class="col-titles" dock="top">
-                        <Label text="ID" class="col-title" />
-                        <Label text="Nombre" class="col-title" />
-                        <Label text="Cantidad" class="col-title" />
-                        <Label text="Costo" class="col-title" />
-                    </StackLayout>
+                    <FlexboxLayout orientation="horizontal" class="col-titles" dock="top">
+                        <Label text="ID" class="col-title" style="width: 8%"/>
+                        <Label text="Nombre" class="col-title" style="width: 35%" />
+                        <Label text="Estado" class="col-title" style="width: 20%" />
+                        <Label text="Cantidad" class="col-title" style="width: 20%"/>
+                        <Label text="Costo" class="col-title" style="width: 20%" />
+                    </FlexboxLayout>
                 </lv:RadListView.headerItemTemplate>
                 <lv:RadListView.itemTemplate>
                     <FlexboxLayout flexDirection="row">
-                        <Label text="{{ id || 'Cargando...' }}" id="id" class="id" horizontalAlignment="left" style="width: 15%" />
+                        <Label text="{{ id || 'Cargando...' }}" id="id" class="id" horizontalAlignment="left" style="width: 10%" />
                         <Label text="{{ name || 'Cargando...' }}" id="name" class="name" horizontalAlignment="left" style="width: 40%" />
+                        <Label text="{{ status || 'Cargando...' }}" id="status" class="status" horizontalAlignment="left" style="width: 10%" />
                         <Label text="{{ quantity  || 'Cargando...' }}" class="qnty" verticalAlignment="center" style="width: 15%" />
                         <Label text="{{ value || 'Cargando...'  }}" class="cost" verticalAlignment="center" style="width: 25%" />
                     </FlexboxLayout>
                 </lv:RadListView.itemTemplate>
             </lv:RadListView>
 
-            <Button text="Atras" class="btn btn-primary" tap="Back" dock="bottom"></Button>
         </DockLayout >
 
     </StackLayout>

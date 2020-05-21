@@ -1,28 +1,76 @@
-var ModifyProductViewModel = require("./modify-product-model");
-var modifyViewModel = new ModifyProductViewModel();
+var ModifyProductImagesViewModel = require("./modify-product-images-model");
+var modifyImagesViewModel = new ModifyProductImagesViewModel();
 const appSettings = require("tns-core-modules/application-settings");
 const dialogs = require("tns-core-modules/ui/dialogs");
 var { Frame } = require("tns-core-modules/ui/frame");
 var { ListPicker } = require("tns-core-modules/ui/list-picker");
 const { ObservableArray } = require("tns-core-modules/data/observable-array");
+var photoViewerModule = require("nativescript-photoviewer");
 const {
 	verifyToken,
 	deleteSesion,
 	parseJSON,
 	checkStatus,
 	createActivityIndicator,
-} = require("../../../functions");
+} = require("../../../../functions");
 
 let product;
+var items = new ObservableArray([
+	{
+		title: "Slide 1",
+		color: "#b3cde0",
+		image:
+			"https://github.com/manijak/nativescript-photoviewer/raw/master/demo/app/res/01.jpg",
+	},
+	{
+		title: "Slide 2",
+		color: "#6497b1",
+		image:
+			"https://github.com/manijak/nativescript-photoviewer/raw/master/demo/app/res/02.jpg",
+	},
+	{
+		title: "Slide 3",
+		color: "#005b96",
+		image:
+			"https://github.com/manijak/nativescript-photoviewer/raw/master/demo/app/res/03.jpg",
+	},
+	{
+		title: "Slide 4",
+		color: "#03396c",
+		image:
+			"https://github.com/manijak/nativescript-photoviewer/raw/master/demo/app/res/04.jpg",
+	},
+	{
+		title: "Slide 2",
+		color: "#6497b1",
+		image:
+			"https://github.com/manijak/nativescript-photoviewer/raw/master/demo/app/res/02.jpg",
+	},
+	{
+		title: "Slide 3",
+		color: "#005b96",
+		image:
+			"https://github.com/manijak/nativescript-photoviewer/raw/master/demo/app/res/03.jpg",
+	},
+	{
+		title: "Slide 4",
+		color: "#03396c",
+		image:
+			"https://github.com/manijak/nativescript-photoviewer/raw/master/demo/app/res/04.jpg",
+	},
+]);
 
 exports.onNavigatingTo = async (args) => {
 	var page = args.object;
-	page.bindingContext = modifyViewModel;
-	const verifiedToken = await verifyToken();
+	page.bindingContext = modifyImagesViewModel;
+
+	modifyImagesViewModel.set("myData", items);
 
 	const main = page.getViewById("main");
 	const indicator = createActivityIndicator();
 	main.addChild(indicator);
+
+	const verifiedToken = await verifyToken();
 
 	const details = page.getViewById("details");
 	const title = page.getViewById("title");
@@ -72,18 +120,18 @@ exports.onNavigatingTo = async (args) => {
 					statusPicker.id = "statusPicker";
 					statusPicker.items = obsProducts.map((v) => v.name);
 
-					const name = details.getViewById("name");
-					name.hint = json.data.name;
+					// const name = details.getViewById("name");
+					// name.hint = json.data.name;
 
-					const desc = details.getViewById("description");
-					desc.hint = json.data.descr;
+					// const desc = details.getViewById("description");
+					// desc.hint = json.data.descr;
 
-					const value = details.getViewById("price");
-					value.hint = "$" + json.data.value.slice(0, -1);
+					// const value = details.getViewById("price");
+					// value.hint = "$" + json.data.value.slice(0, -1);
 
-					const qty = details.getViewById("quantity");
-					qty.hint = json.data.quantity + " piezas";
-					details.getViewById("statusContainer").addChild(statusPicker);
+					// const qty = details.getViewById("quantity");
+					// qty.hint = json.data.quantity + " piezas";
+					// details.getViewById("statusContainer").addChild(statusPicker);
 					details.visibility = "visible";
 					title.visibility = "visible";
 					buttons.visibility = "visible";
@@ -254,16 +302,6 @@ exports.saveChanges = async (args) => {
 				};
 				Frame.topmost().navigate(navegation);
 			});
-	} else if (verifiedToken.response.id === 404) {
-		dialogs
-			.alert({
-				title: "Error",
-				message: `Sucedio un error inesperado. ${verifiedToken.message}`,
-				okButtonText: "Ok",
-			})
-			.then(() => {
-				page.frame.goBack();
-			});
 	} else {
 		dialogs
 			.alert({
@@ -283,28 +321,32 @@ exports.saveChanges = async (args) => {
 	}
 };
 
+exports.showImages = (args) => {
+	try {
+		const photoViewer = new photoViewerModule.PhotoViewer();
+		var photoviewerOptions = {
+			startIndex: args.index,
+			android: {
+				paletteType: photoViewerModule.PaletteType.DarkVibrant,
+				showAlbum: false,
+			},
+		};
+
+		photoViewer
+			.showGallery(
+				items.map((x) => x.image),
+				photoviewerOptions
+			)
+			.then((args) => {
+				console.log("Gallery closed...");
+			});
+	} catch (e) {
+		console.error(e);
+	}
+};
+
 exports.Back = (args) => {
 	const button = args.object;
 	const page = button.page;
 	page.frame.goBack();
-};
-
-exports.modifyImages = (args) => {
-	const id = product.id;
-	console.log(id);
-	const navegation = {
-		moduleName:
-			"Views/products/modify-product/update-images/modify-product-images",
-		transition: {
-			name: "slide",
-		},
-		context: {
-			id,
-		},
-	};
-	try {
-		Frame.topmost().navigate(navegation);
-	} catch (e) {
-		console.error(e);
-	}
 };

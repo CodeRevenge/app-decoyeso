@@ -1,34 +1,71 @@
 <Page xmlns="http://schemas.nativescript.org/tns.xsd" actionBarHidden="true" navigatingTo="onNavigatingTo" 
-    xmlns:nc="nativescript-carousel">
+    xmlns:ns="nativescript-carousel" loaded="pageLoaded">
     <StackLayout id="main" class="main">
 
-        <GridLayout id="carousel" class="card carousel" visibility="collapsed">
-            <nc:Carousel debug="true" color="white" pageChanged="myChangeEvent" pageTapped="mySelectedEvent" indicatorColor="#fff000" finite="false" showIndicator="true" android:indicatorAnimation="swap" indicatorOffset="0, -30" height="100%">
+        <GridLayout class="carousel" visibility="collapsed" id="carousel">
+            <ns:Carousel id="imageCarousel" debug="false" color="white" pageTapped="mySelectedEvent" indicatorColor="#13c28b" finite="false" showIndicator="true" android:indicatorAnimation="thin_worm" indicatorOffset="0, -30" height="100%" items="{{ myData }}">
+                <ns:Carousel.itemTemplate>
+                    <ns:CarouselItem backgroundColor="{{ color }}" verticalAlignment="middle" tap="showImages">
+                        <GridLayout>
+                            <Image src="{{ image }}" stretch="aspectFill" />
+                            <Label class="imgDesc" text="{{title}}" verticalAlignment="middle" horizontalAlignment="left" backgroundColor="#50000000" textWrap="true"/>
+                        </GridLayout>
+                    </ns:CarouselItem>
+                </ns:Carousel.itemTemplate>
 
-                <nc:CarouselItem id="slide1" verticalAlignment="middle">
+            </ns:Carousel>
+        </GridLayout>
+
+        <GridLayout id="details" columns="3*, *" rows="auto, auto, auto, *, auto" height="300" class="card" visibility="collapsed">
+            <Label id="idProd" row="2" col="0" class="idProd" />
+            <Label id="status" row="2" col="1" class="idProd" />
+            <Label id="name" row="0" col="0" colSpan="4" class="name"/>
+            <Label id="value" row="1" col="0" colSpan="2" class="value"/>
+            <Label id="qty" class="qty" row="1" col="4"/>
+            <ScrollView orientation="vertical" row="3" col="0" colSpan="2">
+                <StackLayout orientation="vertical">
+                    <Label id="desc" class="desc" textWrap="true"/>
+                </StackLayout>
+            </ScrollView>
+            <Label id="date" row="4" col="0" colSpan="2" class="date"/>
+        </GridLayout>
+
+        <GridLayout columns="*, *" rows="*" visibility="collapsed" id="buttons" class="card-block">
+            <Button col="0" row="0" text="Agregar al carrito" tap="" id="addCart" visibility="collapsed" />
+            <Button col="1" row="0" text="Modificar" tap="modifyProduct" id="modify" visibility="collapsed" />
+        </GridLayout>
+    </StackLayout>
+</Page>
+<!-- 
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" xmlns:ns="nativescript-carousel" actionBarHidden="true" navigatingTo="onNavigatingTo">
+    <StackLayout id="main" class="main">
+        <GridLayout visibility="visible">
+            <ns:Carousel debug="true" color="white" pageChanged="myChangeEvent" pageTapped="mySelectedEvent" indicatorColor="#fff000" finite="false" showIndicator="true" android:indicatorAnimation="swap" indicatorOffset="0, -30" height="40%">
+
+                <ns:CarouselItem id="slide1" verticalAlignment="middle">
                     <Label text="Each slide is defined in the XML" textWrap="true" margin="30" />
                     <Label text="Slide 1" backgroundColor="#50000000" horizontalAlignment="center"></Label>
 
                     <Label text="Wrap the Carousel in a GridLayout in order to place the indicator on top (android)" textWrap="true" margin="30" ios:visibility="collapsed"/>
-                </nc:CarouselItem>
+                </ns:CarouselItem>
 
-                <nc:CarouselItem id="slide2" verticalAlignment="middle">
+                <ns:CarouselItem id="slide2" verticalAlignment="middle">
                     <Label text="'finite' is set to False. Carousel will not stop at the last slide" textWrap="true" margin="30" android:visibility="collapsed" />
                     <Label text="Indicator animation type: 'swap'" textWrap="true" margin="50" ios:visibility="collapsed" />
                     <Label text="Slide 2" backgroundColor="#50000000" horizontalAlignment="center"></Label>
-                </nc:CarouselItem>
+                </ns:CarouselItem>
 
-                <nc:CarouselItem id="slide3" verticalAlignment="middle">
+                <ns:CarouselItem id="slide3" verticalAlignment="middle">
                     <Label text="Carousel can be used in fullscreen, just set height to 100%" textWrap="true" margin="30"/>
                     <Label text="Slide 3" backgroundColor="#50000000" horizontalAlignment="center"></Label>
-                </nc:CarouselItem>
+                </ns:CarouselItem>
 
-                <nc:CarouselItem id="slide4" verticalAlignment="middle">
+                <ns:CarouselItem id="slide4" verticalAlignment="middle">
                     <Label text="Enjoy using the Carousel plugin :)" textWrap="true" margin="30"/>
                     <Label text="Slide 4" backgroundColor="#50000000" horizontalAlignment="center"></Label>
-                </nc:CarouselItem>
+                </ns:CarouselItem>
 
-            </nc:Carousel>
+            </ns:Carousel>
         </GridLayout>
 
         <GridLayout id="details" columns="3*, *" rows="auto, auto, *, auto" height="300" class="card" visibility="collapsed">
@@ -49,4 +86,4 @@
             <Button col="1" row="0" text="Modificar" tap="modifyProduct" id="modify" visibility="collapsed" />
         </GridLayout>
     </StackLayout>
-</Page>
+</Page> -->

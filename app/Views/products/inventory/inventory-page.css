@@ -13,26 +13,36 @@
 }
 
 .id {
-  font-size: 20;;
+  font-size: 18;;
+  text-align: left;
 }
 
 .name {
-  font-size: 20;
+  font-size: 18;
+  text-align: left;
+}
+
+.status {
+  font-size: 18;
+  text-align: left;
 }
 
 .qnty {
   font-size: 18;
+  text-align: right;
 }
 
 .cost {
-  font-size: 20;
+  font-size: 18;
   color: green;
+  text-align: right;
 }
 
 .col-title {
-  font-size: 17;
-  padding: 0, 15, 0, 15;
+  font-size: 14;
+  padding: 0;
   color: blue;
+  text-align: center;
 }
 
 .search {

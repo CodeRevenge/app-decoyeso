@@ -4,7 +4,12 @@ const dialogs = require("tns-core-modules/ui/dialogs");
 const appSettings = require("tns-core-modules/application-settings");
 const Toast = require("nativescript-toast");
 const { Frame } = require("tns-core-modules/ui/frame");
-const { checkStatus, createActivityIndicator, deleteSesion, parseJSON } = require("../../functions");
+const {
+	checkStatus,
+	createActivityIndicator,
+	deleteSesion,
+	parseJSON,
+} = require("../../functions");
 
 function pageLoaded(args) {
 	var page = args.object;
@@ -97,6 +102,7 @@ exports.Login = async (args) => {
 		})
 		.catch((err) => {
 			console.log("Petición fallida (Login): ", err);
+
 			dialogs
 				.alert({
 					title: "Error",

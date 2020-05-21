@@ -110,3 +110,9 @@ Page {
   padding: 10, 0, 10, 0;
 }
 
+.page-title {
+  color: rgb(36, 36, 139);
+  padding: 5 0 5 0;
+  text-align: center;
+  font-size: 25;
+}

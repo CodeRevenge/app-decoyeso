@@ -1,0 +1,39 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" actionBarHidden="true" navigatingTo="onNavigatingTo" 
+    xmlns:lv="nativescript-ui-listview">
+
+    <StackLayout id="main" class="main">
+        <StackLayout class="card title-card" visibility="collapsed" id="title">
+            <Label class="page-title" text="Modificar Imagenes"/>
+        </StackLayout>
+        <GridLayout rows="*" id="details" orientation="vertical" class="card" visibility="collapsed" height="450">
+
+
+            <lv:RadListView id="list-view" row="0" items="{{ myData }}" marginRight="-2" selectionBehavior="LongPress" multipleSelection="true" itemTap="showImages">
+                <!-- >> listview-item-layouts-grid-xml -->
+                <lv:RadListView.listViewLayout>
+                    <lv:ListViewGridLayout scrollDirection="Vertical" height="250" spanCount="2"/>
+                </lv:RadListView.listViewLayout>
+                <!-- << listview-item-layouts-grid-xml -->
+                <lv:RadListView.itemTemplate>
+                    <GridLayout rows="*">
+                        <GridLayout rows="*" columns="*" marginBottom="2" marginRight="2">
+                            <Image horizontalAlignment="stretch" height="250" ios:stretch="aspectFill" src="{{ image }}"/>
+                            <GridLayout verticalAlignment="bottom">
+                                <StackLayout backgroundColor="{{ color }}" paddingTop="8" paddingBottom="8" paddingLeft="16" paddingRight="16">
+                                    <Label text="{{ title }}"/>
+                                </StackLayout>
+                            </GridLayout>
+                        </GridLayout>
+                    </GridLayout>
+                </lv:RadListView.itemTemplate>
+            </lv:RadListView>
+
+        </GridLayout>
+        <GridLayout columns="*, *" rows="*, *" visibility="collapsed" id="buttons" class="card-block">
+            <Button col="0" row="0" text="Desde Camara" tap="" class="addCart" />
+            <Button col="0" row="1" text="Desde Archivo" tap="" class="addCart" />
+            <Button col="1" row="0" text="Cargar" tap="" class="load"/>
+            <Button col="1" row="1" text="Eliminar" tap="" class="delete"/>
+        </GridLayout>
+    </StackLayout>
+</Page>

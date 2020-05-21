@@ -1,10 +1,10 @@
 <Page xmlns="http://schemas.nativescript.org/tns.xsd" actionBarHidden="true" navigatingTo="onNavigatingTo">
 
     <StackLayout id="main" class="main">
-        <StackLayout class="card" visibility="collapsed" id="title">
-            <Label class="title title-m" text="Modificar producto"/>
+        <StackLayout class="card title-card" visibility="collapsed" id="title">
+            <Label class="page-title" text="Modificar producto"/>
         </StackLayout>
-        <ScrollView id="details" orientation="vertical" class="card" visibility="collapsed">
+        <ScrollView id="details" orientation="vertical" class="card" visibility="collapsed" height="450">
             <DockLayout stretchLastChild="true" orientation="vertical">
                 <StackLayout class="input-field" dock="top">
                     <Label class="text-field-tag" text="Nombre"/>
@@ -30,8 +30,12 @@
                     <Label class="text-field-tag" text="Estado"/>
                 </StackLayout>
 
-                <Button text="Guardar cambios" class="btn btn-primary" tap="saveChanges" dock="top"></Button>
             </DockLayout >
+
         </ScrollView>
+        <GridLayout columns="*, *" rows="*" visibility="collapsed" id="buttons" class="card-block">
+            <Button col="0" row="0" text="Guardar cambios" tap="saveChanges" class="addCart" />
+            <Button col="1" row="0" text="Actualizar Imagenes" tap="modifyImages" class="modify"/>
+        </GridLayout>
     </StackLayout>
 </Page>
