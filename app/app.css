@@ -116,3 +116,16 @@ Page {
   text-align: center;
   font-size: 25;
 }
+
+
+.picker {
+  width: 300;
+  height: 80;
+  vertical-align: middle;
+  font-size: 40;
+}
+
+.title-card {
+  padding: 0 0 0 0;
+}
+

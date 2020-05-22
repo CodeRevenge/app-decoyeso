@@ -1,16 +1,26 @@
-const AdminProdViewModel = require("./admin-prod-view-model");
+const AdminEmpViewModel = require("./admin-emp-view-model");
 const appSettings = require("tns-core-modules/application-settings");
 const { Label } = require("tns-core-modules/ui/label");
 var dialogs = require("tns-core-modules/ui/dialogs");
 var { Frame } = require("tns-core-modules/ui/frame");
 const { Button } = require("tns-core-modules/ui/button");
-var adminProdViewModel = new AdminProdViewModel();
+var adminEmpProdViewModel = new AdminEmpViewModel();
 
-const { verifyToken, deleteSesion } = require("../../../functions");
+const {
+	verifyToken,
+	deleteSesion,
+	parseJSON,
+	checkStatus,
+	createActivityIndicator,
+} = require("../../../functions");
 
 exports.onNavigatingTo = async (args) => {
 	const page = args.object;
-	page.bindingContext = adminProdViewModel;
+	page.bindingContext = adminEmpProdViewModel;
+
+	const main = page.getViewById("main");
+	const indicator = createActivityIndicator();
+	main.addChild(indicator);
 
 	const verifiedToken = await verifyToken();
 
@@ -18,60 +28,21 @@ exports.onNavigatingTo = async (args) => {
 		const conectionLink =
 			appSettings.getString("backHost") + "empleado_info.php";
 
-		const infoCard = page.getViewById("info");
-		const options = page.getViewById("options");
-
-		infoCard.removeChildren();
-		options.removeChildren();
-
 		await fetch(conectionLink, {
 			method: "GET", // or 'PUT'
 			headers: {
 				TOKEN: appSettings.getString("token"),
 			},
 		})
-			.then(async (resp) => {
-				if (resp.ok) {
-					return await resp.json();
-				}
-			})
+			.then(checkStatus)
+			.then(parseJSON)
 			.then((json) => {
 				console.log("JSON User: " + JSON.stringify(json));
 				if (json.status === "OK") {
-					const name = new Label();
-					name.text = "Administrador de Productos";
-					name.className = "title";
-					name.textWrap = true;
-					infoCard.addChild(name);
-
-					const registerProds = new Button();
-					registerProds.text = "Registrar nuevo producto";
-					registerProds.className = "btn btn-primary";
-					registerProds.on("tap", this.regProd);
-					registerProds.dock = "top";
-
-					const updateProd = new Button();
-					updateProd.text = "Modificar producto";
-					updateProd.className = "btn btn-primary";
-					updateProd.on("tap", this.modifyProducts);
-					updateProd.dock = "top";
-
-					// const delProds = new Button();
-					// delProds.text = "Eliminar productos";
-					// delProds.className = "btn btn-primary";
-					// delProds.on("tap", this.backButton);
-					// delProds.dock = "top";
-
-					const backButton = new Button();
-					backButton.text = "Regresar";
-					backButton.className = "btn btn-secundary";
-					backButton.on("tap", this.backButton);
-					backButton.dock = "bottom";
-
-					options.addChild(registerProds);
-					options.addChild(updateProd);
-					// options.addChild(delProds);
-					options.addChild(backButton);
+					indicator.busy = false;
+					main.removeChild(indicator);
+					page.getViewById("info").visibility = "visible";
+					page.getViewById("options").visibility = "visible";
 				} else if (json.status === "TOKEN_EXPIRED") {
 					dialogs
 						.alert({
@@ -125,12 +96,11 @@ exports.onNavigatingTo = async (args) => {
 				Frame.topmost().navigate(navegation);
 			});
 	} else if (verifiedToken.id === 400) {
-		dialogs
-			.alert({
-				title: "Error",
-				message: `Sucedio un error inesperado. ${verifiedToken.message}`,
-				okButtonText: "Ok",
-			})
+		dialogs.alert({
+			title: "Error",
+			message: `Sucedio un error inesperado. ${verifiedToken.message}`,
+			okButtonText: "Ok",
+		});
 	} else {
 		dialogs
 			.alert({
@@ -153,31 +123,17 @@ exports.onNavigatingTo = async (args) => {
 	}
 };
 
-exports.regProd = (args) => {
+exports.btnRegister = (args) => {
 	const navegation = {
-		moduleName: "Views/products/register-product/register-product",
+		moduleName: "Views/users/register/register-page",
 		transition: {
 			name: "slide",
 		},
 	};
 	try {
 		Frame.topmost().navigate(navegation);
-	} catch (e) {
-		console.error(e);
-	}
-};
-
-exports.modifyProducts = (args) => {
-	const navegation = {
-		moduleName: "Views/products/inventory/inventory-page",
-		transition: {
-			name: "slide",
-		},
-	};
-	try {
-		Frame.topmost().navigate(navegation);
-	} catch (e) {
-		console.error(e);
+	} catch(err) {
+		console.error(err);
 	}
 };
 

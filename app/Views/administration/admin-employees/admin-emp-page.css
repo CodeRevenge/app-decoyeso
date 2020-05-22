@@ -1,0 +1,33 @@
+.info {
+  padding: 0%;
+}
+
+.fname {
+  padding: 0;
+  /* padding-top: 40px; */
+  color: black;
+  font-size: 40px;
+  text-align: center;
+}
+
+.title {
+  padding: 0;
+  text-align: center;
+  color: rgb(73, 61, 128);
+  font-size: 30px;
+  height: 80rem;
+}
+
+.role {
+  padding: 0;
+  text-align: center;
+  color: rgb(45, 41, 65);
+  font-size: 30px;
+  padding-bottom: 10px;
+}
+
+.btn-sales {
+  height: 250px;
+  color: rgb(11, 83, 112);
+  background-color: rgb(103, 240, 85);
+}

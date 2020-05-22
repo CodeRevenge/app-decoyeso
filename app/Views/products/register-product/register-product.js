@@ -66,7 +66,7 @@ exports.Register = async (args) => {
 		let URI = encodeURI(
 			`${conectionLink}?nombre=${name}&descripcion=${description}&costo=${price}&cantidad=${quantity}`
 		);
-		console.log(URI);
+		
 
 		await fetch(URI, {
 			method: "GET",
@@ -97,7 +97,7 @@ exports.Register = async (args) => {
 				} else {
 					dialogs.alert({
 						title: "Error",
-						message: `Sucedio un error inesperado. ${json}`,
+						message: `Sucedio un error inesperado. ${json.message}`,
 						okButtonText: "Ok",
 					});
 				}

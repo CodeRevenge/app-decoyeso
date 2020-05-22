@@ -200,6 +200,7 @@ exports.onPullToRefreshInitiated = async (args) => {
 					const item = {
 						id: json[i].id,
 						name: json[i].name,
+						status: json[i].status,
 						quantity: json[i].quantity,
 						value,
 					};

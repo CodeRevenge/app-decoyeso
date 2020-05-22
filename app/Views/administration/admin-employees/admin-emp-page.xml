@@ -1,0 +1,16 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" actionBarHidden="true" navigatingTo="onNavigatingTo" loaded="onPageLoaded">
+
+  <StackLayout id="main" class="main">
+
+    <StackLayout id="info" class="card title title-card" visibility="collapsed">
+      <Label text="Empleados"/>
+    </StackLayout>
+    <ScrollView id="options" orientation="vertical" class="card" visibility="collapsed">
+      <StackLayout orientation="vertical">
+        <Button text="Registrar nuevo empleado" class="btn btn-primary" tap="btnRegister" />
+        <Button text="Modificar empleado" class="btn btn-primary" tap="" />
+        <Button text="Regresar" tap="backButton" class="btn btn-secundary"/>
+      </StackLayout>
+    </ScrollView>
+  </StackLayout>
+</Page>

@@ -1,69 +1,63 @@
 <Page xmlns="http://schemas.nativescript.org/tns.xsd" actionBarHidden="true" navigatingTo="onNavigatingTo">
-    
-    <StackLayout class="main">
-        <StackLayout class="space"></StackLayout>
-        <StackLayout class="card">
+
+    <StackLayout id="main" class="main">
+        <StackLayout class="card title-card" id="title" visibility="collapsed">
             <Label class="title title-m" text="Registro"/>
         </StackLayout>
-        <ScrollView orientation="vertical" class="card">
-            <DockLayout  stretchLastChild="true" orientation="vertical">
+        <ScrollView id="details" orientation="vertical" class="card" height="500" visibility="collapsed">
+            <DockLayout stretchLastChild="true" orientation="vertical">
                 <StackLayout class="input-field" dock="top">
                     <Label class="text-field-tag" text="CURP"/>
-                    <TextField class="input" id="curp"
-                    hint="CURP"></TextField>
+                    <TextField class="input" id="curp" hint="CURP"/>
                 </StackLayout>
 
                 <StackLayout class="input-field" dock="top">
                     <Label class="text-field-tag" text="Nickname"/>
-                    <TextField class="input" id="nickname"
-                    hint="Nickname"></TextField>
+                    <TextField class="input" id="nickname" hint="Nickname"/>
                 </StackLayout>
 
                 <StackLayout class="input-field" dock="top">
                     <Label class="text-field-tag" text="Nombre"/>
-                    <TextField class="input" id="firstName"
-                    hint="Nombre"></TextField>
+                    <TextField class="input" id="firstName" hint="Nombre"/>
                 </StackLayout>
 
                 <StackLayout class="input-field" dock="top">
                     <Label class="text-field-tag" text="Apellido"/>
-                    <TextField class="input" id="lastName"
-                    hint="Apellido"></TextField>
+                    <TextField class="input" id="lastName" hint="Apellido"/>
                 </StackLayout>
 
                 <StackLayout class="input-field" dock="top">
                     <Label class="text-field-tag" text="Contraseña"/>
-                    <TextField class="input" id="password"
-                    hint="Contraseña" secure="true"></TextField>
+                    <TextField class="input" id="password" hint="Contraseña" secure="true"/>
                 </StackLayout>
 
                 <StackLayout class="input-field" dock="top">
                     <Label class="text-field-tag" text="Repetir Contraseña"/>
-                    <TextField class="input" id="rep_password"
-                    hint="Repetir contraseña" secure="true"></TextField>
+                    <TextField class="input" id="rep_password" hint="Repetir contraseña" secure="true"/>
                 </StackLayout>
 
                 <StackLayout class="input-field" dock="top">
                     <Label class="text-field-tag" text="Fecha de Nacimiento"/>
-                    <DatePicker year="{{ currentYear }}" month="{{ currentMonth }}"
-                    day="{{ currentDay}}" minDate="1960-01-01"
-                    maxDate="2100-12-31" id="birthDay"/>
+                    <DatePicker year="{{ currentYear }}" month="{{ currentMonth }}" day="{{ currentDay}}" minDate="1960-01-01" maxDate="2100-12-31" id="birthDay" class="picker" />
                 </StackLayout>
 
                 <StackLayout class="input-field" dock="top">
                     <Label class="text-field-tag" text="Dirección"/>
-                    <TextField class="input" id="addres"
-                    hint="Dirección"></TextField>
+                    <TextField class="input" id="addres" hint="Dirección"/>
                 </StackLayout>
 
                 <StackLayout class="input-field" dock="top">
                     <Label class="text-field-tag" text="Teléfono"/>
-                    <TextField class="input" id="phone"
-                    hint="Teléfono" keyboardType="phone"></TextField>
+                    <TextField class="input" id="phone" hint="Teléfono" keyboardType="phone"/>
                 </StackLayout>
 
-                <Button text="Registrar" class="btn btn-primary" tap="Register" dock="top"></Button>
-                <Button text="Cancelar" class="btn btn-secundary" tap="Cancel" dock="top"></Button>
+                <StackLayout id="rol-sel" class="input-field" dock="top">
+                    <Label class="text-field-tag" text="Rol de empleado"/>
+                    <ListPicker id="rolPicker" class="picker" />
+                </StackLayout>
+
+                <Button text="Registrar" class="btn btn-primary" tap="Register" dock="top"/>
+                <Button text="Cancelar" class="btn btn-secundary" tap="Cancel" dock="top" />
             </DockLayout >
         </ScrollView>
     </StackLayout>

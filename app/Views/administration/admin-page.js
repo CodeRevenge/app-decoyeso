@@ -63,7 +63,7 @@ exports.onNavigatingTo = async (args) => {
 					const adminEmployees = new Button();
 					adminEmployees.text = "Administrar Empleados";
 					adminEmployees.className = "btn btn-primary";
-					adminEmployees.on("tap", this.adminProdPage);
+					adminEmployees.on("tap", this.adminEmployeesPage);
 					adminEmployees.dock = "top";
 
 					const adminSales = new Button();
@@ -171,7 +171,7 @@ exports.adminProdPage = (args) => {
 
 exports.adminEmployeesPage = (args) => {
 	const navegation = {
-		moduleName: "Views/administration/admin-prod/admin-prod-page",
+		moduleName: "Views/administration/admin-employees/admin-emp-page",
 		transition: {
 			name: "slide",
 		},

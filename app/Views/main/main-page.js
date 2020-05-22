@@ -5,9 +5,6 @@ var dialogs = require("tns-core-modules/ui/dialogs");
 var { Frame } = require("tns-core-modules/ui/frame");
 const { Button } = require("tns-core-modules/ui/button");
 var mainViewModel = new MainViewModel();
-const platformModule = require("tns-core-modules/platform");
-var Toast = require("nativescript-toast");
-const application = require("tns-core-modules/application");
 
 const {
 	verifyToken,
@@ -116,7 +113,7 @@ exports.onNavigatingTo = async (args) => {
 					dialogs
 						.alert({
 							title: "Error",
-							message: `Sucedio un error inesperado. ${verifiedToken.message}`,
+							message: `Sucedio un error inesperado. ${json.message}`,
 							okButtonText: "Ok",
 						})
 						.then(() => {

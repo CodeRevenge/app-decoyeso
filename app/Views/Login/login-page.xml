@@ -17,8 +17,7 @@
                         <TextField class="input" id="password" hint="Contraseña" secure="true"></TextField>
                     </StackLayout>
 
-                    <Button text="Iniciar Sesión" class="btn btn-primary" tap="Login" dock="top"></Button>
-                    <Button text="Registrarse" class="btn btn-secundary" tap="btnRegister" dock="top"></Button>
+                    <Button text="Iniciar Sesión" class="btn btn-primary" height="80"  tap="Login" dock="top"></Button>
 
                     <Label text="Si olvidó su contraseña contacte a un administrador." class="min-text" textWrap="true" dock="top"/>
                 </DockLayout >
