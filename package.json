@@ -13,12 +13,15 @@
   "repository": "<fill-your-repository-here>",
   "dependencies": {
     "@nativescript/theme": "~2.3.3",
+    "lodash": "^4.17.15",
     "moment": "^2.25.3",
     "nativescript-camera": "^4.5.0",
     "nativescript-carousel": "^6.1.1",
+    "nativescript-mediafilepicker": "^3.0.1",
     "nativescript-photoviewer": "^2.1.5",
     "nativescript-toast": "^2.0.0",
     "nativescript-ui-listview": "^8.1.2",
+    "nativescript-vibrate": "^3.0.0",
     "tns-core-modules": "~6.5.0"
   },
   "devDependencies": {

@@ -67,9 +67,7 @@ exports.onNavigatingTo = async (args) => {
 
 						obsProducts.push(item);
 					}
-					const statusPicker = new ListPicker();
-					statusPicker.className = "picker";
-					statusPicker.id = "statusPicker";
+					const statusPicker = details.getViewById("statusPicker");
 					statusPicker.items = obsProducts.map((v) => v.name);
 
 					const name = details.getViewById("name");
@@ -83,7 +81,7 @@ exports.onNavigatingTo = async (args) => {
 
 					const qty = details.getViewById("quantity");
 					qty.hint = json.data.quantity + " piezas";
-					details.getViewById("statusContainer").addChild(statusPicker);
+					
 					details.visibility = "visible";
 					title.visibility = "visible";
 					buttons.visibility = "visible";

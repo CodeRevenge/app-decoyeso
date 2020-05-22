@@ -8,7 +8,7 @@
         <GridLayout rows="*" id="details" orientation="vertical" class="card" visibility="collapsed" height="450">
 
 
-            <lv:RadListView id="list-view" row="0" items="{{ myData }}" marginRight="-2" selectionBehavior="LongPress" multipleSelection="true" itemTap="showImages">
+            <lv:RadListView id="list-view" row="0" items="{{ myData }}" marginRight="-2" selectionBehavior="LongPress" multipleSelection="true" itemTap="showImages" itemSelected="onItemSelected">
                 <!-- >> listview-item-layouts-grid-xml -->
                 <lv:RadListView.listViewLayout>
                     <lv:ListViewGridLayout scrollDirection="Vertical" height="250" spanCount="2"/>
@@ -20,7 +20,7 @@
                             <Image horizontalAlignment="stretch" height="250" ios:stretch="aspectFill" src="{{ image }}"/>
                             <GridLayout verticalAlignment="bottom">
                                 <StackLayout backgroundColor="{{ color }}" paddingTop="8" paddingBottom="8" paddingLeft="16" paddingRight="16">
-                                    <Label text="{{ title }}"/>
+                                    <TextField hint="{{title}}" class="pic-detail" textChange="onTextChange"/>
                                 </StackLayout>
                             </GridLayout>
                         </GridLayout>
@@ -30,10 +30,10 @@
 
         </GridLayout>
         <GridLayout columns="*, *" rows="*, *" visibility="collapsed" id="buttons" class="card-block">
-            <Button col="0" row="0" text="Desde Camara" tap="" class="addCart" />
-            <Button col="0" row="1" text="Desde Archivo" tap="" class="addCart" />
-            <Button col="1" row="0" text="Cargar" tap="" class="load"/>
-            <Button col="1" row="1" text="Eliminar" tap="" class="delete"/>
+            <Button col="0" row="0" colSpan="2" text="Abrir Imagenes" tap="openImages" class="addCart" />
+
+            <Button col="0" row="1" text="Guardar Cambios" tap="savePics" class="load"/>
+            <Button col="1" row="1" text="Eliminar selección" tap="deletePics" class="delete"/>
         </GridLayout>
     </StackLayout>
 </Page>

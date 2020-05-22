@@ -93,3 +93,23 @@ exports.createActivityIndicator = () => {
 
 	return indicator;
 };
+
+var rgbToHex = function (rgb) { 
+  var hex = Number(rgb).toString(16);
+  if (hex.length < 2) {
+       hex = "0" + hex;
+  }
+  return hex;
+};
+
+exports.randomColor = () => {
+	let R = Math.floor(Math.random() * 100);
+	let G = Math.floor(Math.random() * 60) + 91;
+	let B = Math.floor(Math.random() * 150) + 27;
+
+	var red = rgbToHex(R);
+  var green = rgbToHex(G);
+  var blue = rgbToHex(B);
+  let color = red+green+blue;
+  return "#" + color;
+};

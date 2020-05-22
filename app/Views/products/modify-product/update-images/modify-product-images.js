@@ -6,59 +6,25 @@ var { Frame } = require("tns-core-modules/ui/frame");
 var { ListPicker } = require("tns-core-modules/ui/list-picker");
 const { ObservableArray } = require("tns-core-modules/data/observable-array");
 var photoViewerModule = require("nativescript-photoviewer");
+var arraysFuncts = require("lodash");
 const {
 	verifyToken,
 	deleteSesion,
 	parseJSON,
 	checkStatus,
 	createActivityIndicator,
+	randomColor,
 } = require("../../../../functions");
+const { Mediafilepicker } = require("nativescript-mediafilepicker");
+const { Vibrate } = require("nativescript-vibrate");
+const imageSourceModule = require("tns-core-modules/image-source");
 
 let product;
-var items = new ObservableArray([
-	{
-		title: "Slide 1",
-		color: "#b3cde0",
-		image:
-			"https://github.com/manijak/nativescript-photoviewer/raw/master/demo/app/res/01.jpg",
-	},
-	{
-		title: "Slide 2",
-		color: "#6497b1",
-		image:
-			"https://github.com/manijak/nativescript-photoviewer/raw/master/demo/app/res/02.jpg",
-	},
-	{
-		title: "Slide 3",
-		color: "#005b96",
-		image:
-			"https://github.com/manijak/nativescript-photoviewer/raw/master/demo/app/res/03.jpg",
-	},
-	{
-		title: "Slide 4",
-		color: "#03396c",
-		image:
-			"https://github.com/manijak/nativescript-photoviewer/raw/master/demo/app/res/04.jpg",
-	},
-	{
-		title: "Slide 2",
-		color: "#6497b1",
-		image:
-			"https://github.com/manijak/nativescript-photoviewer/raw/master/demo/app/res/02.jpg",
-	},
-	{
-		title: "Slide 3",
-		color: "#005b96",
-		image:
-			"https://github.com/manijak/nativescript-photoviewer/raw/master/demo/app/res/03.jpg",
-	},
-	{
-		title: "Slide 4",
-		color: "#03396c",
-		image:
-			"https://github.com/manijak/nativescript-photoviewer/raw/master/demo/app/res/04.jpg",
-	},
-]);
+let updates = false;
+var items = new ObservableArray();
+
+var uploadablePhotos = [];
+var deletedPhotos = [];
 
 exports.onNavigatingTo = async (args) => {
 	var page = args.object;
@@ -77,12 +43,10 @@ exports.onNavigatingTo = async (args) => {
 	const buttons = page.getViewById("buttons");
 
 	if (verifiedToken.status) {
+		product = page.navigationContext.id;
 		const conectionLink =
-			appSettings.getString("backHost") +
-			"detalles_producto.php?id=" +
-			page.navigationContext.id;
+			appSettings.getString("backHost") + "request_images.php?id=" + product;
 
-		console.log(conectionLink);
 
 		await fetch(conectionLink, {
 			method: "GET",
@@ -95,46 +59,23 @@ exports.onNavigatingTo = async (args) => {
 			.then((json) => {
 				console.log("JSON Produc: " + JSON.stringify(json));
 				if (json.status === "OK") {
+					for (let i in json.data) {
+						let item = {
+							id: json.data[i].id,
+							title: json.data[i].title,
+							color: randomColor(),
+							image: json.data[i].image,
+						};
+						items.push(item);
+					}
+
 					indicator.busy = false;
 					main.removeChild(indicator);
-					product = json.data;
+					page.getViewById("title").visibility = "visible";
+					page.getViewById("details").visibility = "visible";
+					page.getViewById("buttons").visibility = "visible";
 
-					const obsProducts = new ObservableArray();
-					for (var i = 1; i < Object.keys(json.statusList).length; i++) {
-						let item;
-						try {
-							let value = json.statusList[i];
-
-							item = {
-								id: value.id,
-								name: value.name,
-							};
-						} catch (e) {
-							console.error(e);
-						}
-
-						obsProducts.push(item);
-					}
-					const statusPicker = new ListPicker();
-					statusPicker.className = "picker";
-					statusPicker.id = "statusPicker";
-					statusPicker.items = obsProducts.map((v) => v.name);
-
-					// const name = details.getViewById("name");
-					// name.hint = json.data.name;
-
-					// const desc = details.getViewById("description");
-					// desc.hint = json.data.descr;
-
-					// const value = details.getViewById("price");
-					// value.hint = "$" + json.data.value.slice(0, -1);
-
-					// const qty = details.getViewById("quantity");
-					// qty.hint = json.data.quantity + " piezas";
-					// details.getViewById("statusContainer").addChild(statusPicker);
-					details.visibility = "visible";
-					title.visibility = "visible";
-					buttons.visibility = "visible";
+					console.log(JSON.stringify(json.data));
 				} else if (json.status === "TOKEN_EXPIRED") {
 					dialogs
 						.alert({
@@ -153,21 +94,11 @@ exports.onNavigatingTo = async (args) => {
 					return 0;
 				} else {
 					message = json.eMessage;
-					dialogs
-						.alert({
-							title: "Error",
-							message: `Sucedio un error inesperado. ${verifiedToken.message}`,
-							okButtonText: "Ok",
-						})
-						.then(() => {
-							deleteSesion();
-							console.log(appSettings.getString("token"));
-							const navegation = {
-								moduleName: "Views/login/login-page",
-								clearHistory: true,
-							};
-							Frame.topmost().navigate(navegation);
-						});
+					dialogs.alert({
+						title: "Error",
+						message: `Sucedio un error inesperado. ${json.message}`,
+						okButtonText: "Ok",
+					});
 					return 0;
 				}
 			})
@@ -224,103 +155,6 @@ exports.onNavigatingTo = async (args) => {
 	}
 };
 
-exports.saveChanges = async (args) => {
-	const page = args.object.page;
-
-	const name = page.getViewById("name");
-	const description = page.getViewById("description");
-	const price = page.getViewById("price");
-	const quantity = page.getViewById("quantity");
-	const statusPicker = page.getViewById("statusPicker").selectedIndex + 1;
-	console.log(statusPicker);
-
-	const verifiedToken = await verifyToken();
-
-	const nameEx = name.text ? name.text : name.hint;
-	const descriptionEx = description.text ? description.text : description.hint;
-	const priceEx = price.text ? price.text : price.hint.slice(1);
-	const quantityEx = quantity.text
-		? quantity.text
-		: quantity.hint.split(" ")[0];
-
-	if (verifiedToken.status) {
-		const conectionLink =
-			appSettings.getString("backHost") + "update_product.php";
-		let URI = encodeURI(
-			`${conectionLink}?id=${product.id}&nombre=${nameEx}&descripcion=${descriptionEx}` +
-				`&costo=${priceEx}&cantidad=${quantityEx}&status=${statusPicker}`
-		);
-		console.log(URI);
-
-		await fetch(URI, {
-			method: "GET",
-			headers: {
-				TOKEN: appSettings.getString("token"),
-			},
-		})
-			.then(checkStatus)
-			.then(parseJSON)
-			.then((json) => {
-				console.log("JSON Produc: " + JSON.stringify(json));
-				if (json.status === "OK") {
-					dialogs
-						.alert({
-							title: "Guardado",
-							message: `Los cambios se han guardado`,
-							okButtonText: "Ok",
-						})
-						.then(() => {
-							Frame.topmost().goBack();
-						});
-				} else if (json.status === "WARNING") {
-					dialogs.alert({
-						title: "Error",
-						message: `${json.message}`,
-						okButtonText: "Ok",
-					});
-				} else {
-					dialogs.alert({
-						title: "Error",
-						message: `Sucedio un error inesperado. ${json}`,
-						okButtonText: "Ok",
-					});
-				}
-			})
-			.catch((error) => console.error(error));
-	} else if (verifiedToken.id === 1) {
-		dialogs
-			.alert({
-				title: "Sesión expirada",
-				message: "La sesión ha expirado, vuelva a iniciar sesión.",
-				okButtonText: "Ok",
-			})
-			.then(() => {
-				deleteSesion();
-				const navegation = {
-					moduleName: "Views/login/login-page",
-					clearHistory: true,
-				};
-				Frame.topmost().navigate(navegation);
-			});
-	} else {
-		dialogs
-			.alert({
-				title: "Error",
-				message: `Sucedio un error inesperado. ${verifiedToken.message}`,
-				okButtonText: "Ok",
-			})
-			.then(() => {
-				deleteSesion();
-				console.log(appSettings.getString("token"));
-				const navegation = {
-					moduleName: "Views/login/login-page",
-					clearHistory: true,
-				};
-				Frame.topmost().navigate(navegation);
-			});
-	}
-};
-
 exports.showImages = (args) => {
 	try {
 		const photoViewer = new photoViewerModule.PhotoViewer();
@@ -345,8 +179,271 @@ exports.showImages = (args) => {
 	}
 };
 
+exports.onItemSelected = (args) => {
+	let vibrator = new Vibrate();
+	vibrator.vibrate(200);
+};
+
+exports.openImages = (args) => {
+	let options = {
+		android: {
+			isCaptureMood: false, // if true then camera will open directly.
+			isNeedCamera: true,
+			maxNumberFiles: 10,
+			isNeedFolderList: true,
+		},
+		ios: {
+			isCaptureMood: false, // if true then camera will open directly.
+			isNeedCamera: true,
+			maxNumberFiles: 10,
+		},
+	};
+
+	let mediafilepicker = new Mediafilepicker();
+	mediafilepicker.openImagePicker(options);
+
+	mediafilepicker.on("getFiles", function (res) {
+		let results = res.object.get("results");
+		for (let i in results) {
+			let newImage = {
+				color: randomColor(),
+				image: results[i].file,
+				title: "Detalles",
+			};
+			items.push(newImage);
+			uploadablePhotos.push(items.getItem(items.length - 1));
+			updates = true;
+		}
+
+		console.dir(results);
+	});
+
+	mediafilepicker.on("error", function (res) {
+		let msg = res.object.get("msg");
+		console.log(msg);
+	});
+
+	mediafilepicker.on("cancel", function (res) {
+		let msg = res.object.get("msg");
+		console.log(msg);
+	});
+};
+
 exports.Back = (args) => {
 	const button = args.object;
 	const page = button.page;
 	page.frame.goBack();
+};
+
+exports.savePics = async (args) => {
+	if (updates) {
+		const page = args.object.page;
+
+		const main = page.getViewById("main");
+		page.getViewById("title").visibility = "collapsed";
+		page.getViewById("details").visibility = "collapsed";
+		page.getViewById("buttons").visibility = "collapsed";
+
+		const indicator = createActivityIndicator();
+		main.addChild(indicator);
+
+		const verifiedToken = await verifyToken();
+
+		if (verifiedToken.status) {
+			let body = {};
+			for (let i in uploadablePhotos) {
+				const img = imageSourceModule.fromFile(uploadablePhotos[0].image);
+				const base64 = img.toBase64String("png");
+				body[i] = {
+					id: product,
+					image: base64,
+					title: uploadablePhotos[i].title,
+				};
+			}
+
+			const conectionLink =
+				appSettings.getString("backHost") + "load_image.php";
+
+			await fetch(conectionLink, {
+				method: "POST",
+				headers: {
+					TOKEN: appSettings.getString("token"),
+					Accept: "application/json",
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(body),
+			})
+				.then(checkStatus)
+				.then(parseJSON)
+				.then((json) => {
+					console.log(json);
+					if (json.status === "OK") {
+						dialogs
+							.alert({
+								title: "Cambios realizados",
+								message: "Se han guardado los cambios",
+								okButtonText: "Ok",
+							})
+							.then(() => {
+								page.frame.goBack();
+							});
+					} else if (json.status === "TOKEN_EXPIRED") {
+						dialogs
+							.alert({
+								title: "Sesión expirada",
+								message: "La sesión ha expirado, vuelva a iniciar sesión.",
+								okButtonText: "Ok",
+							})
+							.then(() => {
+								deleteSesion();
+								const navegation = {
+									moduleName: "Views/login/login-page",
+									clearHistory: true,
+								};
+								Frame.topmost().navigate(navegation);
+							});
+						return 0;
+					} else {
+						message = json.eMessage;
+						dialogs.alert({
+							title: "Error",
+							message: `Sucedio un error inesperado. ${json.message}`,
+							okButtonText: "Ok",
+						});
+
+						return 0;
+					}
+				})
+				.catch((err) => {
+					console.error(err);
+				});
+		}
+	} else if (verifiedToken.id === 1) {
+		dialogs
+			.alert({
+				title: "Sesión expirada",
+				message: "La sesión ha expirado, vuelva a iniciar sesión.",
+				okButtonText: "Ok",
+			})
+			.then(() => {
+				deleteSesion();
+				const navegation = {
+					moduleName: "Views/login/login-page",
+					clearHistory: true,
+				};
+				Frame.topmost().navigate(navegation);
+			});
+	} else if (verifiedToken.id === 404) {
+		dialogs
+			.alert({
+				title: "Error de server",
+				message: `Sucedio un error inesperado. ${verifiedToken.message}`,
+				okButtonText: "Ok",
+			})
+			.then(() => {
+				page.frame.goBack();
+			});
+	} else {
+		dialogs
+			.alert({
+				title: "Error Token",
+				message: `Sucedio un error inesperado. ${verifiedToken.message}`,
+				okButtonText: "Ok",
+			})
+			.then(() => {
+				deleteSesion();
+				console.log(appSettings.getString("token"));
+				const navegation = {
+					moduleName: "Views/login/login-page",
+					clearHistory: true,
+				};
+				Frame.topmost().navigate(navegation);
+			});
+	}
+	// let message = "";
+	// if (sel_images.length === 1) {
+	// 	message =
+	// 		"¿Seguro que desea borrar la imagen?" +
+	// 		"\nLos cambios no se guardan hasta presionar el botón Guardar Cambios";
+	// } else if (sel_images.length > 1) {
+	// 	message =
+	// 		`¿Seguro que desea borrar las ${sel_images.length} imagenes?` +
+	// 		"\nLos cambios no se guardan hasta presionar el botón Guardar Cambios";
+	// } else {
+	// 	return;
+	// }
+	// dialogs
+	// 	.confirm({
+	// 		title: "Borrar imagenes",
+	// 		message,
+	// 		okButtonText: "Ok",
+	// 		cancelButtonText: "Cancelar",
+	// 	})
+	// 	.then((res) => {
+	// 		if (res) {
+	// 			temp = [];
+	// 			items.reduce((_, curr) => {
+	// 				if (!sel_images.includes(curr)) {
+	// 					temp.push(curr);
+	// 				} else {
+	// 					deletedPhotos.push(curr);
+	// 				}
+	// 			});
+
+	// 			items = new ObservableArray(temp);
+	// 			images.items = items;
+	// 		}
+	// 	});
+};
+
+exports.deletePics = (args) => {
+	const images = args.object.page.getViewById("list-view");
+	const sel_images = images.getSelectedItems();
+	let message = "";
+	if (sel_images.length === 1) {
+		message =
+			"¿Seguro que desea borrar la imagen?" +
+			"\nLos cambios no se guardan hasta presionar el botón Guardar Cambios";
+	} else if (sel_images.length > 1) {
+		message =
+			`¿Seguro que desea borrar las ${sel_images.length} imagenes?` +
+			"\nLos cambios no se guardan hasta presionar el botón Guardar Cambios";
+	} else {
+		return;
+	}
+	dialogs
+		.confirm({
+			title: "Borrar imagenes",
+			message,
+			okButtonText: "Ok",
+			cancelButtonText: "Cancelar",
+		})
+		.then((res) => {
+			if (res) {
+				temp = [];
+				items.reduce((_, curr) => {
+					if (sel_images.includes(curr)) {
+						deletedPhotos.push(curr);
+						if (uploadablePhotos.includes(curr)) {
+							uploadablePhotos = uploadablePhotos.filter((val) => {
+								if (!arraysFuncts.isEqual(val, curr)) {
+									return val;
+								}
+							});
+						}
+						console.log(uploadablePhotos);
+					} else {
+						temp.push(curr);
+					}
+				});
+
+				items = new ObservableArray(temp);
+				images.items = items;
+				updates = true;
+			}
+		});
+};
+
+exports.onTextChange = (args) => {
+	console.log(args.object.text);
 };

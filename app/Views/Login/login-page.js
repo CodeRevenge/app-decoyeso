@@ -72,7 +72,12 @@ exports.Login = async (args) => {
 						console.log("Token:" + appSettings.getString("token"));
 						let toast = Toast.makeText(json.message).show();
 						indicator.busy = false;
-						Frame.topmost().navigate(navegation);
+						try {
+							Frame.topmost().navigate(navegation);
+						} catch(err) {
+							console.error(err);
+						}
+						
 					});
 			} else if (json.status === "WARNING") {
 				dialogs
@@ -119,12 +124,16 @@ exports.Login = async (args) => {
 
 exports.btnRegister = (args) => {
 	const navegation = {
-		moduleName: "Views/register/register-page",
+		moduleName: "Views/users/register/register-page",
 		transition: {
 			name: "slide",
 		},
 	};
-	args.object.page.frame.navigate(navegation);
+	try {
+		Frame.topmost().navigate(navegation);
+	} catch(err) {
+		console.error(err);
+	}
 };
 
 exports.pageLoaded = pageLoaded;

@@ -16,44 +16,17 @@ const {
 	createActivityIndicator,
 	parseJSON,
 	checkStatus,
+	randomColor
 } = require("../../../functions");
 
-var items = new ObservableArray([
-	{
-		title: "Slide 1",
-		color: "#b3cde0",
-		image:
-			"https://github.com/manijak/nativescript-photoviewer/raw/master/demo/app/res/01.jpg",
-	},
-	{
-		title: "Slide 2",
-		color: "#6497b1",
-		image:
-			"https://github.com/manijak/nativescript-photoviewer/raw/master/demo/app/res/02.jpg",
-	},
-	{
-		title: "Slide 3",
-		color: "#005b96",
-		image:
-			"https://github.com/manijak/nativescript-photoviewer/raw/master/demo/app/res/03.jpg",
-	},
-	{
-		title: "Slide 4",
-		color: "#03396c",
-		image:
-			"https://github.com/manijak/nativescript-photoviewer/raw/master/demo/app/res/04.jpg",
-	},
-]);
-
-exports.pageLoaded = (args) => {
-	var page = args.object;
-	page.bindingContext = detailsProductsViewModel;
-
-	detailsProductsViewModel.set("myData", items);
-};
+var items = new ObservableArray();
+let product;
 
 exports.onNavigatingTo = async (args) => {
 	const page = args.object;
+	page.bindingContext = detailsProductsViewModel;
+
+	detailsProductsViewModel.set("myData", items);
 
 	const main = page.getViewById("main");
 	const indicator = createActivityIndicator();
@@ -65,14 +38,73 @@ exports.onNavigatingTo = async (args) => {
 	const verifiedToken = await verifyToken();
 
 	if (verifiedToken.status) {
+		product = page.navigationContext.id;
 		const conectionLink =
-			appSettings.getString("backHost") +
-			"detalles_producto.php?id=" +
-			page.navigationContext.id;
-
-		console.log(conectionLink);
+			appSettings.getString("backHost") + "request_images.php?id=" + product;
 
 		await fetch(conectionLink, {
+			method: "GET",
+			headers: {
+				TOKEN: appSettings.getString("token"),
+			},
+		})
+			.then(checkStatus)
+			.then(parseJSON)
+			.then((json) => {
+				console.log("JSON Produc: " + JSON.stringify(json));
+				if (json.status === "OK") {
+					for (let i in json.data) {
+						let item = {
+							id: json.data[i].id,
+							title: json.data[i].title,
+							color: randomColor(),
+							image: json.data[i].image,
+						};
+						items.push(item);
+					}
+
+					console.log(JSON.stringify(json.data));
+				} else if (json.status === "TOKEN_EXPIRED") {
+					dialogs
+						.alert({
+							title: "Sesión expirada",
+							message: "La sesión ha expirado, vuelva a iniciar sesión.",
+							okButtonText: "Ok",
+						})
+						.then(() => {
+							deleteSesion();
+							const navegation = {
+								moduleName: "Views/login/login-page",
+								clearHistory: true,
+							};
+							Frame.topmost().navigate(navegation);
+						});
+					return 0;
+				} else {
+					message = json.eMessage;
+					dialogs.alert({
+						title: "Error",
+						message: `Sucedio un error inesperado. ${json.message}`,
+						okButtonText: "Ok",
+					});
+					return 0;
+				}
+			})
+			.then((data) => data)
+			.catch((err) => {
+				console.error("Petición fallida (Main): ", err);
+				dialogs.alert({
+					title: "Error",
+					message: `Sucedio un error inesperado. ${err}`,
+					okButtonText: "Ok",
+				});
+			});
+
+		const conectionLink2 =
+			appSettings.getString("backHost") + "detalles_producto.php?id=" + product;
+		
+
+		await fetch(conectionLink2, {
 			method: "GET",
 			headers: {
 				TOKEN: appSettings.getString("token"),

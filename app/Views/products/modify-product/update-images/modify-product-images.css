@@ -47,3 +47,9 @@
   background-color: #810c12;
   color: white;
 }
+
+.pic-detail {
+  placeholder-color: hsl(251, 38%, 83%);
+  color: rgb(255, 255, 255);
+  font-size: 15px;
+}

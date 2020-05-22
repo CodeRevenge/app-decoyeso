@@ -28,6 +28,7 @@
 
                 <StackLayout id="statusContainer" class="input-field" dock="top">
                     <Label class="text-field-tag" text="Estado"/>
+                    <ListPicker id="statusPicker" class="picker" />
                 </StackLayout>
 
             </DockLayout >
