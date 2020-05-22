@@ -1,0 +1,50 @@
+.title {
+  padding-top: 15;
+}
+
+.space {
+  margin: 15 0 10 0;
+}
+
+.products {
+  padding: 5 15 5 15;
+  font-size: 15;
+  color: rgb(28, 134, 196);
+}
+
+.id {
+  font-size: 18;;
+  text-align: left;
+}
+
+.name {
+  font-size: 18;
+  text-align: left;
+}
+
+.status {
+  font-size: 18;
+  text-align: left;
+}
+
+.qnty {
+  font-size: 18;
+  text-align: left;
+}
+
+.cost {
+  font-size: 18;
+  color: green;
+  text-align: right;
+}
+
+.col-title {
+  font-size: 14;
+  padding: 0;
+  color: blue;
+  text-align: center;
+}
+
+.search {
+  font-size: 20;
+}

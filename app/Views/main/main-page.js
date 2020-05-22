@@ -62,9 +62,9 @@ exports.onNavigatingTo = async (args) => {
 					infoCard.addChild(role);
 
 					const newSale = new Button();
-					newSale.text = "Nueva Venta";
+					newSale.text = "Ver Carrito";
 					newSale.className = "btn btn-primary btn-sales";
-					newSale.on("tap", this.showInventory);
+					newSale.on("tap", this.showCart);
 					newSale.dock = "top";
 
 					const inventory = new Button();
@@ -199,6 +199,20 @@ exports.regProd = (args) => {
 		},
 	};
 	args.object.page.frame.navigate(navegation);
+};
+
+exports.showCart = (args) => {
+	const navegation = {
+		moduleName: "Views/products/cart/cart-page",
+		transition: {
+			name: "slide",
+		},
+	};
+	try {
+		Frame.topmost().navigate(navegation);
+	} catch (e) {
+		console.error(e);
+	}
 };
 
 exports.showInventory = (args) => {

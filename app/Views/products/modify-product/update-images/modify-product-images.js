@@ -47,7 +47,6 @@ exports.onNavigatingTo = async (args) => {
 		const conectionLink =
 			appSettings.getString("backHost") + "request_images.php?id=" + product;
 
-
 		await fetch(conectionLink, {
 			method: "GET",
 			headers: {
@@ -92,6 +91,12 @@ exports.onNavigatingTo = async (args) => {
 							Frame.topmost().navigate(navegation);
 						});
 					return 0;
+				} else if (json.status === "NO_IMAGES") {
+					indicator.busy = false;
+					main.removeChild(indicator);
+					page.getViewById("title").visibility = "visible";
+					page.getViewById("details").visibility = "visible";
+					page.getViewById("buttons").visibility = "visible";
 				} else {
 					message = json.eMessage;
 					dialogs.alert({
@@ -181,7 +186,7 @@ exports.showImages = (args) => {
 
 exports.onItemSelected = (args) => {
 	let vibrator = new Vibrate();
-	vibrator.vibrate(200);
+	vibrator.vibrate(50);
 };
 
 exports.openImages = (args) => {

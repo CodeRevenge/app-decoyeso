@@ -66,17 +66,17 @@ exports.onNavigatingTo = async (args) => {
 					adminEmployees.on("tap", this.adminEmployeesPage);
 					adminEmployees.dock = "top";
 
-					const adminSales = new Button();
-					adminSales.text = "Administrar Ventas";
-					adminSales.className = "btn btn-primary";
-					adminSales.on("tap", this.adminProdPage);
-					adminSales.dock = "top";
+					// const adminSales = new Button();
+					// adminSales.text = "Administrar Ventas";
+					// adminSales.className = "btn btn-primary";
+					// adminSales.on("tap", this.adminProdPage);
+					// adminSales.dock = "top";
 
-					const adminClients = new Button();
-					adminClients.text = "Administrar Clientes";
-					adminClients.className = "btn btn-primary";
-					adminClients.on("tap", this.adminProdPage);
-					adminClients.dock = "top";
+					// const adminClients = new Button();
+					// adminClients.text = "Administrar Clientes";
+					// adminClients.className = "btn btn-primary";
+					// adminClients.on("tap", this.adminProdPage);
+					// adminClients.dock = "top";
 
 					const backButton = new Button();
 					backButton.text = "Regresar";
@@ -86,8 +86,8 @@ exports.onNavigatingTo = async (args) => {
 
 					options.addChild(adminProducts);
 					options.addChild(adminEmployees);
-					options.addChild(adminSales);
-					options.addChild(adminClients);
+					// options.addChild(adminSales);
+					// options.addChild(adminClients);
 					options.addChild(backButton);
 				} else if (json.status === "TOKEN_EXPIRED") {
 					dialogs

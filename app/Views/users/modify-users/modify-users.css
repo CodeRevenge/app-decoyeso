@@ -1,0 +1,33 @@
+.title {
+  padding-top: 15;
+}
+
+.space {
+  margin: 15 0 10 0;
+}
+
+.page-title {
+  color: blue;
+  padding: 5 0 5 0;
+  text-align: center;
+  font-size: 25;
+}
+
+
+.addCart {
+  font-size: 20px;
+  padding: 15 0 15 0;
+  height: 85;
+  width: 550;
+  background-color: #265e4a;
+  color: white;
+}
+
+.modify {
+  font-size: 20px;
+  padding: 15 0 15 0;
+  height: 85;
+  width: 550;
+  background-color: #2f5c6e;
+  color: white;
+}

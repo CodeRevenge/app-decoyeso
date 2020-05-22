@@ -1,0 +1,47 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" actionBarHidden="true" navigatingTo="onNavigatingTo" 
+    xmlns:lv="nativescript-ui-listview" loaded="pageLoaded">
+    <StackLayout id="main" class="main">
+        <StackLayout class="card title-card" visibility="collapsed" id="title">
+            <Label class="page-title" text="Carrito"/>
+        </StackLayout>
+
+        <DockLayout stretchLastChild="true" orientation="vertical" id="cartItems" visibility="collapsed">
+
+            <lv:RadListView id="cartItemsList" class="card" style="height:1000px" dock="top" >
+                <lv:RadListView.pullToRefreshStyle>
+                    <lv:PullToRefreshStyle indicatorColor="white" indicatorBackgroundColor="blue"/>
+                </lv:RadListView.pullToRefreshStyle>
+                <lv:RadListView.headerItemTemplate>
+                    <FlexboxLayout orientation="horizontal" class="col-titles" dock="top">
+                        <Label text="ID" class="col-title" style="width: 8%"/>
+                        <Label text="Nombre" class="col-title" style="width: 35%" />
+                        <Label text="Cantidad" class="col-title" style="width: 20%" />
+                        <Label text="P/U" class="col-title" style="width: 20%"/>
+                        <Label text="Total" class="col-title" horizontalAlignment="right" style="width: 20%" />
+                    </FlexboxLayout>
+                </lv:RadListView.headerItemTemplate>
+                <lv:RadListView.itemTemplate>
+                    <FlexboxLayout flexDirection="row">
+                        <Label text="{{ id || 'Cargando...' }}" id="id" class="id" horizontalAlignment="left" style="width: 10%" />
+                        <Label text="{{ name || 'Cargando...' }}" id="name" class="name" horizontalAlignment="left" style="width: 40%" />
+                        <Label text="{{ qty || 'Cargando...' }}" id="status" class="status" horizontalAlignment="left" style="width: 10%" />
+                        <Label text="{{ value  || 'Cargando...' }}" class="qnty" verticalAlignment="center" style="width: 15%" />
+                        <Label text="{{ total || 'Cargando...'  }}" class="cost" verticalAlignment="center" style="width: 20%" />
+                    </FlexboxLayout>
+                </lv:RadListView.itemTemplate>
+            </lv:RadListView>
+
+        </DockLayout >
+
+        <GridLayout id="details" columns="*, *, *, *, *, *, *" rows="*" height="100" class="card" visibility="collapsed">
+            
+            <Label id="total" class="total" text="$00.00" row="0" col="2" colSpan="6" rowSpan="3"/>
+            <Label class="total-text" text="Total:" row="0" col="0" colSpan="3" rowSpan="3"/>
+        </GridLayout>
+
+        <GridLayout columns="*" rows="*" visibility="collapsed" id="buttons" class="card-block">
+            <Button col="0" row="0" text="Pagar" tap="bntPay" id="addCart"/>
+
+        </GridLayout>
+    </StackLayout>
+</Page>

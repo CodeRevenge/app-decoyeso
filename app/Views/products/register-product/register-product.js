@@ -15,7 +15,8 @@ exports.onNavigatingTo = async (args) => {
 	page.bindingContext = registerViewModel;
 
 	const verifiedToken = await verifyToken();
-	if (verifiedToken.id === 1) {
+	if (verifiedToken.status) {
+	} else if (verifiedToken.id === 1) {
 		dialogs
 			.alert({
 				title: "Sesión expirada",
@@ -66,7 +67,6 @@ exports.Register = async (args) => {
 		let URI = encodeURI(
 			`${conectionLink}?nombre=${name}&descripcion=${description}&costo=${price}&cantidad=${quantity}`
 		);
-		
 
 		await fetch(URI, {
 			method: "GET",

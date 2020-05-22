@@ -132,7 +132,21 @@ exports.btnRegister = (args) => {
 	};
 	try {
 		Frame.topmost().navigate(navegation);
-	} catch(err) {
+	} catch (err) {
+		console.error(err);
+	}
+};
+
+exports.userList = (args) => {
+	const navegation = {
+		moduleName: "Views/users/user-list/user-list-page",
+		transition: {
+			name: "slide",
+		},
+	};
+	try {
+		Frame.topmost().navigate(navegation);
+	} catch (err) {
 		console.error(err);
 	}
 };

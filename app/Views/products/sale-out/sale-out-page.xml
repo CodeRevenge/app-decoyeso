@@ -1,0 +1,11 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" actionBarHidden="true" navigatingTo="onNavigatingTo" loaded="pageLoaded">
+    <StackLayout id="main" class="main">
+        <GridLayout id="details" columns="*" rows="*, auto" height="300" class="card">
+            <Image src="res://check" class="check"/>
+            <Label text="Venta realizada" row="1" class="title" />
+            
+        </GridLayout>
+        <Button text="Ir a inicio" tap="toMain" class="btn-sales"/>
+        
+    </StackLayout>
+</Page>

@@ -16,23 +16,22 @@
             </ns:Carousel>
         </GridLayout>
 
-        <GridLayout id="details" columns="3*, *" rows="auto, auto, auto, *, auto" height="300" class="card" visibility="collapsed">
+        <GridLayout id="details" columns="*, *, *, *, 2*, *" rows="*, *, *, *, *, *, *" height="300" class="card" visibility="collapsed">
             <Label id="idProd" row="2" col="0" class="idProd" />
-            <Label id="status" row="2" col="1" class="idProd" />
-            <Label id="name" row="0" col="0" colSpan="4" class="name"/>
-            <Label id="value" row="1" col="0" colSpan="2" class="value"/>
-            <Label id="qty" class="qty" row="1" col="4"/>
-            <ScrollView orientation="vertical" row="3" col="0" colSpan="2">
-                <StackLayout orientation="vertical">
-                    <Label id="desc" class="desc" textWrap="true"/>
-                </StackLayout>
-            </ScrollView>
-            <Label id="date" row="4" col="0" colSpan="2" class="date"/>
+            <TextField hint="Cantidad" id="selected" class="selected" keyboardType="integer" row="3" col="4" colSpan="3" textChange="onChange"/>
+
+
+            <Label id="name" row="0" col="0" colSpan="6" rowSpan="3" class="name"/>
+            <Label id="value" row="3" col="0" colSpan="2" class="value"/>
+            <Label id="qty" class="qty" row="1" col="0" colSpan="4"/>
+            <Label class="exs" text="X" row="3" col="3"/>
+            <Label id="total" class="total" text="$00.00" row="5" col="4" colSpan="3" rowSpan="3"/>
+            <Label class="total-text" text="Total:" row="5" col="0" colSpan="4" rowSpan="3"/>
         </GridLayout>
 
         <GridLayout columns="*, *" rows="*" visibility="collapsed" id="buttons" class="card-block">
             <Button col="0" row="0" text="Agregar al carrito" tap="addCart" id="addCart" visibility="collapsed" />
-            <Button col="1" row="0" text="Modificar" tap="modifyProduct" id="modify" visibility="collapsed" />
+
         </GridLayout>
     </StackLayout>
 </Page>

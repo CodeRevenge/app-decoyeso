@@ -19,6 +19,7 @@
     "nativescript-carousel": "^6.1.1",
     "nativescript-mediafilepicker": "^3.0.1",
     "nativescript-photoviewer": "^2.1.5",
+    "nativescript-sqlite": "^2.6.3",
     "nativescript-toast": "^2.0.0",
     "nativescript-ui-listview": "^8.1.2",
     "nativescript-vibrate": "^3.0.0",

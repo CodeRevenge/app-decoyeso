@@ -1,10 +1,10 @@
-const DetailsProductsViewModel = require("./detail-products-view-model");
+const AddCartViewModel = require("./add-cart-view-model");
 const appSettings = require("tns-core-modules/application-settings");
 const { Label } = require("tns-core-modules/ui/label");
 var dialogs = require("tns-core-modules/ui/dialogs");
 var { Frame } = require("tns-core-modules/ui/frame");
 const { Button } = require("tns-core-modules/ui/button");
-var detailsProductsViewModel = new DetailsProductsViewModel();
+var addCartViewModel = new AddCartViewModel();
 const { Carousel } = require("nativescript-carousel");
 const { ObservableArray } = require("tns-core-modules/data/observable-array");
 var photoViewerModule = require("nativescript-photoviewer");
@@ -20,14 +20,16 @@ const {
 } = require("../../../functions");
 
 var items;
+let productId;
 let product;
+let images;
 
 exports.onNavigatingTo = async (args) => {
 	const page = args.object;
-	page.bindingContext = detailsProductsViewModel;
+	page.bindingContext = addCartViewModel;
 	items = new ObservableArray();
 
-	detailsProductsViewModel.set("myData", items);
+	addCartViewModel.set("myData", items);
 
 	const main = page.getViewById("main");
 	const indicator = createActivityIndicator();
@@ -39,9 +41,9 @@ exports.onNavigatingTo = async (args) => {
 	const verifiedToken = await verifyToken();
 
 	if (verifiedToken.status) {
-		product = page.navigationContext.id;
+		productId = page.navigationContext.id;
 		const conectionLink =
-			appSettings.getString("backHost") + "request_images.php?id=" + product;
+			appSettings.getString("backHost") + "request_images.php?id=" + productId;
 
 		await fetch(conectionLink, {
 			method: "GET",
@@ -52,7 +54,6 @@ exports.onNavigatingTo = async (args) => {
 			.then(checkStatus)
 			.then(parseJSON)
 			.then((json) => {
-				console.log("JSON Produc: " + JSON.stringify(json));
 				if (json.status === "OK") {
 					for (let i in json.data) {
 						let item = {
@@ -63,6 +64,7 @@ exports.onNavigatingTo = async (args) => {
 						};
 						items.push(item);
 					}
+					images = true;
 					carousel.visibility = "visible";
 				} else if (json.status === "TOKEN_EXPIRED") {
 					dialogs
@@ -81,6 +83,7 @@ exports.onNavigatingTo = async (args) => {
 						});
 					return 0;
 				} else if (json.status === "NO_IMAGES") {
+					images = false;
 				} else {
 					message = json.eMessage;
 					dialogs.alert({
@@ -102,7 +105,9 @@ exports.onNavigatingTo = async (args) => {
 			});
 
 		const conectionLink2 =
-			appSettings.getString("backHost") + "detalles_producto.php?id=" + product;
+			appSettings.getString("backHost") +
+			"detalles_producto.php?id=" +
+			productId;
 
 		await fetch(conectionLink2, {
 			method: "GET",
@@ -113,7 +118,8 @@ exports.onNavigatingTo = async (args) => {
 			.then(checkStatus)
 			.then(parseJSON)
 			.then((json) => {
-				console.log("JSON Produc: " + JSON.stringify(json));
+				product = json.data;
+
 				if (json.status === "OK") {
 					indicator.busy = false;
 					main.removeChild(indicator);
@@ -121,38 +127,17 @@ exports.onNavigatingTo = async (args) => {
 					const name = details.getViewById("name");
 					name.text = json.data.name;
 
-					const desc = details.getViewById("desc");
-					desc.text = json.data.descr;
-
 					const value = details.getViewById("value");
 					value.text = "$" + json.data.value.slice(0, -1);
 
 					const qty = details.getViewById("qty");
 					qty.text = json.data.quantity + " piezas";
 
-					const date = details.getViewById("date");
-
-					date.text =
-						"Ultima actualización " +
-						moment(json.data.updated, "YYYY-MM-DD HH:mm:ss", false)
-							.subtract(5, "hours")
-							.fromNow();
-
-					const id = details.getViewById("idProd");
-					id.text = "ID " + json.data.id;
-
-					const status = details.getViewById("status");
-					status.text = json.statusList[json.data.status].name;
-
 					details.visibility = "visible";
 					buttons.visibility = "visible";
 					const addCart = buttons.getViewById("addCart");
 					addCart.visibility = "visible";
-					if (verifiedToken.role > 1) {
-						buttons.getViewById("modify").visibility = "visible";
-					} else {
-						addCart.colSpan = 2;
-					}
+					addCart.colSpan = 2;
 				} else if (json.status === "TOKEN_EXPIRED") {
 					dialogs
 						.alert({
@@ -289,22 +274,91 @@ exports.modifyProduct = (args) => {
 	}
 };
 
-exports.addCart = (args) => {
-	const id = args.object.page
-		.getViewById("details")
-		.getViewById("idProd")
-		.text.split(" ")[1];
+exports.addCart = async (args) => {
+	const page = args.object.page;
+	const id = product.id;
+	const qty = page.getViewById("selected").text;
+
+	// const main = page.getViewById("main");
+	// const indicator = createActivityIndicator();
+	// const carousel = page.getViewById("carousel");
+	// const details = page.getViewById("details");
+	// const buttons = page.getViewById("buttons");
+	// carousel.visibility = "collapsed";
+	// details.visibility = "collapsed";
+	// buttons.visibility = "collapsed";
+	// main.addChild(indicator);
+
+	if (parseFloat(qty) > product.quantity) {
+		await dialogs
+			.alert({
+				title: "Error",
+				message: `No hay suficiente stock para surtir ${qty} elementos.`,
+				okButtonText: "Ok",
+			})
+			.then(() => {
+				// main.removeChild(indicator);
+				// images
+				// 	? (carousel.visibility = "visible")
+				// 	: (carousel.visibility = "collapsed");
+				// details.visibility = "visible";
+				// buttons.visibility = "visible";
+				return;
+			});
+		return;
+	}
+
+	if (parseFloat(qty) <= 0 || isNaN(parseFloat(qty))) {
+		await dialogs
+			.alert({
+				title: "No se agrego",
+				message: `No se agrego nada al carrito`,
+				okButtonText: "Ok",
+			})
+			.then(() => {
+				// main.removeChild(indicator);
+				// images
+				// 	? (carousel.visibility = "visible")
+				// 	: (carousel.visibility = "collapsed");
+				// details.visibility = "visible";
+				// buttons.visibility = "visible";
+				return;
+			});
+		return;
+	}
+
 	const navegation = {
-		moduleName: "Views/products/add-cart/add-cart-page",
+		moduleName: "Views/products/cart/cart-page",
 		transition: {
 			name: "slide",
 		},
 		context: {
 			id,
+			qty,
 		},
 	};
 	try {
 		Frame.topmost().navigate(navegation);
+	} catch (e) {
+		console.error(e);
+	}
+};
+
+exports.onChange = (args) => {
+	const page = args.object.page;
+	const total = page.getViewById("total");
+	const qty = args.object.text;
+	try {
+		if (qty) {
+			if (parseFloat(qty) > product.quantity) {
+				args.object.className = "selected invalid-selection";
+			} else {
+				total.text = "$ " + parseFloat(qty) * parseFloat(product.value);
+				args.object.className = "selected";
+			}
+		} else {
+			total.text = "$ 00.00";
+		}
 	} catch (e) {
 		console.error(e);
 	}

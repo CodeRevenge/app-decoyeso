@@ -1,5 +1,5 @@
-var ModifyProductViewModel = require("./modify-product-model");
-var modifyViewModel = new ModifyProductViewModel();
+var ModifyUsersViewModel = require("./modify-users-model");
+var modifyUsersViewModel = new ModifyUsersViewModel();
 const appSettings = require("tns-core-modules/application-settings");
 const dialogs = require("tns-core-modules/ui/dialogs");
 var { Frame } = require("tns-core-modules/ui/frame");
@@ -13,11 +13,12 @@ const {
 	createActivityIndicator,
 } = require("../../../functions");
 
-let product;
+let user;
+let userGo;
 
 exports.onNavigatingTo = async (args) => {
 	var page = args.object;
-	page.bindingContext = modifyViewModel;
+	page.bindingContext = modifyUsersViewModel;
 	const verifiedToken = await verifyToken();
 
 	const main = page.getViewById("main");
@@ -29,10 +30,9 @@ exports.onNavigatingTo = async (args) => {
 	const buttons = page.getViewById("buttons");
 
 	if (verifiedToken.status) {
+		user = page.navigationContext.id;
 		const conectionLink =
-			appSettings.getString("backHost") +
-			"detalles_producto.php?id=" +
-			page.navigationContext.id;
+			appSettings.getString("backHost") + "empleado_info.php?id=" + user;
 
 		console.log(conectionLink);
 
@@ -45,47 +45,17 @@ exports.onNavigatingTo = async (args) => {
 			.then(checkStatus)
 			.then(parseJSON)
 			.then((json) => {
-				console.log("JSON Produc: " + JSON.stringify(json));
 				if (json.status === "OK") {
 					indicator.busy = false;
 					main.removeChild(indicator);
-					product = json.data;
-
-					const obsProducts = new ObservableArray();
-					for (var i = 1; i < Object.keys(json.statusList).length; i++) {
-						let item;
-						try {
-							let value = json.statusList[i];
-
-							item = {
-								id: value.id,
-								name: value.name,
-							};
-						} catch (e) {
-							console.error(e);
-						}
-
-						obsProducts.push(item);
-					}
-					const statusPicker = details.getViewById("statusPicker");
-					statusPicker.items = obsProducts.map((v) => v.name);
-					statusPicker.selectedIndex = json.data.status - 1;
-
-					const name = details.getViewById("name");
-					name.hint = json.data.name;
-
-					const desc = details.getViewById("description");
-					desc.hint = json.data.descr;
-
-					const value = details.getViewById("price");
-					value.hint = "$" + json.data.value.slice(0, -1);
-
-					const qty = details.getViewById("quantity");
-					qty.hint = json.data.quantity + " piezas";
-
-					details.visibility = "visible";
-					title.visibility = "visible";
-					buttons.visibility = "visible";
+					const userData = json.data;
+					modifyUsersViewModel.set("CURP", userData.CURP);
+					modifyUsersViewModel.set("nickname", userData.nickname);
+					modifyUsersViewModel.set("firstname", userData.firstname);
+					modifyUsersViewModel.set("lastname", userData.lastname);
+					modifyUsersViewModel.set("address", userData.addres);
+					modifyUsersViewModel.set("phone", userData.phone);
+					userGo = userData;
 				} else if (json.status === "TOKEN_EXPIRED") {
 					dialogs
 						.alert({
@@ -104,21 +74,12 @@ exports.onNavigatingTo = async (args) => {
 					return 0;
 				} else {
 					message = json.eMessage;
-					dialogs
-						.alert({
-							title: "Error",
-							message: `Sucedio un error inesperado. ${verifiedToken.message}`,
-							okButtonText: "Ok",
-						})
-						.then(() => {
-							deleteSesion();
-							console.log(appSettings.getString("token"));
-							const navegation = {
-								moduleName: "Views/login/login-page",
-								clearHistory: true,
-							};
-							Frame.topmost().navigate(navegation);
-						});
+					dialogs.alert({
+						title: "Error",
+						message: `Sucedio un error inesperado. ${json.message}`,
+						okButtonText: "Ok",
+					});
+
 					return 0;
 				}
 			})
@@ -130,6 +91,73 @@ exports.onNavigatingTo = async (args) => {
 					message: `Sucedio un error inesperado. ${err}`,
 					okButtonText: "Ok",
 				});
+			});
+
+		await fetch(appSettings.getString("backHost") + "request_role_names.php", {
+			method: "GET",
+			headers: {
+				TOKEN: appSettings.getString("token"),
+			},
+		})
+			.then(checkStatus)
+			.then(parseJSON)
+			.then((json) => {
+				if (json.status === "OK") {
+					const obsProducts = new ObservableArray();
+					for (var i in json.data) {
+						let item;
+						try {
+							let value = json.data[i];
+
+							item = {
+								id: value.id,
+								name: value.name,
+							};
+						} catch (e) {
+							console.error(e);
+						}
+
+						obsProducts.push(item);
+					}
+					const statusPicker = details.getViewById("statusPicker");
+					statusPicker.items = obsProducts.map((v) => v.name);
+					statusPicker.selectedIndex = userGo.rol - 1;
+				}
+			});
+
+		await fetch(
+			appSettings.getString("backHost") + "request_emp_status_names.php",
+			{
+				method: "GET",
+				headers: {
+					TOKEN: appSettings.getString("token"),
+				},
+			}
+		)
+			.then(checkStatus)
+			.then(parseJSON)
+			.then((json) => {
+				if (json.status === "OK") {
+					const obsProducts = new ObservableArray();
+					for (var i in json.data) {
+						let item;
+						try {
+							let value = json.data[i];
+
+							item = {
+								id: value.id,
+								name: value.name,
+							};
+						} catch (e) {
+							console.error(e);
+						}
+
+						obsProducts.push(item);
+					}
+					const rolPicker = details.getViewById("rolPicker");
+					rolPicker.items = obsProducts.map((v) => v.name);
+					rolPicker.selectedIndex = userGo.status - 1;
+				}
 			});
 	} else if (verifiedToken.id === 1) {
 		dialogs
@@ -173,33 +201,80 @@ exports.onNavigatingTo = async (args) => {
 				Frame.topmost().navigate(navegation);
 			});
 	}
+	details.visibility = "visible";
+	title.visibility = "visible";
+	buttons.visibility = "visible";
 };
 
 exports.saveChanges = async (args) => {
 	const page = args.object.page;
+	const main = page.getViewById("main");
+	const indicator = createActivityIndicator();
+	main.addChild(indicator);
+	main.getViewById("title").visibility = "collapsed";
+	main.getViewById("details").visibility = "collapsed";
+	main.getViewById("buttons").visibility = "collapsed";
 
-	const name = page.getViewById("name");
-	const description = page.getViewById("description");
-	const price = page.getViewById("price");
-	const quantity = page.getViewById("quantity");
+	const curp = page.getViewById("curp");
+	const nickname = page.getViewById("nickname");
+	const firstname = page.getViewById("firstname");
+	const lastname = page.getViewById("lastname");
 	const statusPicker = page.getViewById("statusPicker").selectedIndex + 1;
-	console.log(statusPicker);
+	const password = page.getViewById("password");
+	const rep_password = page.getViewById("rep_password");
+	const address = page.getViewById("address");
+	const phone = page.getViewById("phone");
+	const rolPicker = page.getViewById("rolPicker").selectedIndex + 1;
 
 	const verifiedToken = await verifyToken();
 
-	const nameEx = name.text ? name.text : name.hint;
-	const descriptionEx = description.text ? description.text : description.hint;
-	const priceEx = price.text ? price.text : price.hint.slice(1);
-	const quantityEx = quantity.text
-		? quantity.text
-		: quantity.hint.split(" ")[0];
+	const curpEx = curp.text ? curp.text : curp.hint;
+	const nicknameEx = nickname.text ? nickname.text : nickname.hint;
+	const firstnameEx = firstname.text ? firstname.text : firstname.hint;
+	const lastnameEx = lastname.text ? lastname.text : lastname.hint;
+	const addressEx = address.text ? address.text : address.hint;
+	const phoneEx = phone.text ? phone.text : phone.hint;
+
+	if (password.text !== rep_password.text) {
+		password.className += " input-invalid";
+		rep_password.className += " input-invalid";
+
+		dialogs.alert({
+			title: "Las contraseñas no coinciden",
+			message: `Verifique que las contraseñas coincidan.`,
+			okButtonText: "Ok",
+		});
+		main.removeChild(indicator);
+		main.getViewById("title").visibility = "visible";
+		main.getViewById("details").visibility = "visible";
+		main.getViewById("buttons").visibility = "visible";
+
+		return;
+	}
+
+	if (password.text.length < 8 && password.text.length > 0) {
+		password.className += " input-invalid";
+		rep_password.className += " input-invalid";
+
+		dialogs.alert({
+			title: "Contraseña invalida",
+			message: `Verifique que la contraseña mida 8 o más caracteres.`,
+			okButtonText: "Ok",
+		});
+		main.removeChild(indicator);
+		main.getViewById("title").visibility = "visible";
+		main.getViewById("details").visibility = "visible";
+		main.getViewById("buttons").visibility = "visible";
+
+		return;
+	}
 
 	if (verifiedToken.status) {
-		const conectionLink =
-			appSettings.getString("backHost") + "update_product.php";
+		const conectionLink = appSettings.getString("backHost") + "updata_user.php";
 		let URI = encodeURI(
-			`${conectionLink}?id=${product.id}&nombre=${nameEx}&descripcion=${descriptionEx}` +
-				`&costo=${priceEx}&cantidad=${quantityEx}&status=${statusPicker}`
+			`${conectionLink}?id=${userGo.id}&curp=${curpEx}&nickname=${nicknameEx}` +
+				`&fistname=${firstnameEx}&lastname=${lastnameEx}&status=${statusPicker}` +
+				`&rol=${rolPicker}&password=${password.text}&address=${addressEx}&phone=${phoneEx}`
 		);
 		console.log(URI);
 
@@ -286,24 +361,4 @@ exports.Back = (args) => {
 	const button = args.object;
 	const page = button.page;
 	page.frame.goBack();
-};
-
-exports.modifyImages = (args) => {
-	const id = product.id;
-	console.log(id);
-	const navegation = {
-		moduleName:
-			"Views/products/modify-product/update-images/modify-product-images",
-		transition: {
-			name: "slide",
-		},
-		context: {
-			id,
-		},
-	};
-	try {
-		Frame.topmost().navigate(navegation);
-	} catch (e) {
-		console.error(e);
-	}
 };

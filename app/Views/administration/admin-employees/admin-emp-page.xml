@@ -8,7 +8,7 @@
     <ScrollView id="options" orientation="vertical" class="card" visibility="collapsed">
       <StackLayout orientation="vertical">
         <Button text="Registrar nuevo empleado" class="btn btn-primary" tap="btnRegister" />
-        <Button text="Modificar empleado" class="btn btn-primary" tap="" />
+        <Button text="Modificar empleado" class="btn btn-primary" tap="userList" />
         <Button text="Regresar" tap="backButton" class="btn btn-secundary"/>
       </StackLayout>
     </ScrollView>

@@ -1,0 +1,99 @@
+.info {
+  padding: 0%;
+}
+
+.fname {
+  padding: 0;
+  /* padding-top: 40px; */
+  color: black;
+  font-size: 40px;
+  text-align: center;
+}
+
+.carousel {
+  height: 280;
+}
+
+.imgDesc {
+  font-size: 25;
+  text-align: center;
+  width: 200;
+}
+
+
+.btn-sales {
+  height: 250px;
+  font-size: 30;
+  color: rgb(11, 83, 112);
+  background-color: rgb(103, 240, 85);
+}
+
+.name {
+  color: rgb(36, 36, 168);
+  font-size: 40px;
+}
+
+
+.value {
+  color: green;
+  font-size: 25px;
+}
+
+.qty {
+  font-size: 18px;
+  vertical-align: bottom;
+}
+
+.total-text {
+  font-size: 45px;
+  color: rgb(13, 13, 77);
+  vertical-align: bottom;
+}
+
+.total {
+  font-size: 25px;
+  color: rgb(27, 108, 114);
+  vertical-align: bottom;
+}
+
+.selected {
+  font-size: 23;
+  padding: 0;
+  color: #2f5c6e;
+  vertical-align: bottom;
+}
+
+.exs {
+  color: green;
+  font-size: 25px;
+  vertical-align: bottom;
+}
+
+#addCart {
+  font-size: 20px;
+  padding: 15 0 15 0;
+  height: 55;
+  width: 550;
+  background-color: #265e4a;
+  color: white;
+}
+
+#modify {
+  font-size: 20px;
+  padding: 15 0 15 0;
+  height: 55;
+  width: 550;
+  background-color: #2f5c6e;
+  color: white;
+}
+
+.invalid-selection {
+  color: rgb(207, 97, 97);
+}
+
+.ckeck {
+  width: 200;
+  height: 200;
+  vertical-align: center;
+  text-align: center;
+}

@@ -1,29 +1,32 @@
 <Page xmlns="http://schemas.nativescript.org/tns.xsd" actionBarHidden="true" navigatingTo="onNavigatingTo">
 
     <StackLayout id="main" class="main">
-        <StackLayout class="card page-title" id="title" visibility="collapsed">
-            <Label text="Registro"/>
+        <StackLayout class="card title-card" visibility="collapsed" id="title">
+            <Label class="page-title" text="Modificar producto"/>
         </StackLayout>
-        <ScrollView id="details" orientation="vertical" class="card" height="500" visibility="collapsed">
+        <ScrollView id="details" orientation="vertical" class="card" visibility="collapsed" height="450">
             <DockLayout stretchLastChild="true" orientation="vertical">
                 <StackLayout class="input-field" dock="top">
                     <Label class="text-field-tag" text="CURP"/>
-                    <TextField class="input" id="curp" hint="CURP"/>
+                    <TextField class="input" id="curp" hint="{{CURP}}"></TextField>
                 </StackLayout>
-
                 <StackLayout class="input-field" dock="top">
                     <Label class="text-field-tag" text="Nickname"/>
-                    <TextField class="input" id="nickname" hint="Nickname"/>
+                    <TextField class="input" id="nickname" hint="{{nickname}}"></TextField>
                 </StackLayout>
-
                 <StackLayout class="input-field" dock="top">
                     <Label class="text-field-tag" text="Nombre"/>
-                    <TextField class="input" id="firstName" hint="Nombre"/>
+                    <TextField class="input" id="firstname" hint="{{firstname}}"></TextField>
                 </StackLayout>
 
                 <StackLayout class="input-field" dock="top">
                     <Label class="text-field-tag" text="Apellido"/>
-                    <TextField class="input" id="lastName" hint="Apellido"/>
+                    <TextField class="input" id="lastname" hint="{{lastname}}"></TextField>
+                </StackLayout>
+
+                <StackLayout id="statusContainer" class="input-field" dock="top">
+                    <Label class="text-field-tag" text="Rol del empleado"/>
+                    <ListPicker id="statusPicker" class="picker"/>
                 </StackLayout>
 
                 <StackLayout class="input-field" dock="top">
@@ -37,28 +40,25 @@
                 </StackLayout>
 
                 <StackLayout class="input-field" dock="top">
-                    <Label class="text-field-tag" text="Fecha de Nacimiento"/>
-                    <DatePicker year="{{ currentYear }}" month="{{ currentMonth }}" day="{{ currentDay}}" minDate="1960-01-01" maxDate="2100-12-31" id="birthDay" class="picker" />
-                </StackLayout>
-
-                <StackLayout class="input-field" dock="top">
                     <Label class="text-field-tag" text="Dirección"/>
-                    <TextField class="input" id="addres" hint="Dirección"/>
+                    <TextField class="input" id="address" hint="{{address}}"/>
                 </StackLayout>
 
                 <StackLayout class="input-field" dock="top">
                     <Label class="text-field-tag" text="Teléfono"/>
-                    <TextField class="input" id="phone" hint="Teléfono" keyboardType="phone"/>
+                    <TextField class="input" id="phone" hint="{{phone}}" keyboardType="phone"/>
                 </StackLayout>
 
                 <StackLayout id="rol-sel" class="input-field" dock="top">
-                    <Label class="text-field-tag" text="Rol de empleado"/>
+                    <Label class="text-field-tag" text="Estado"/>
                     <ListPicker id="rolPicker" class="picker" />
                 </StackLayout>
 
-                <Button text="Registrar" class="btn btn-primary" tap="Register" dock="top"/>
-                <Button text="Cancelar" class="btn btn-secundary" tap="Cancel" dock="top" />
             </DockLayout >
+
         </ScrollView>
+        <GridLayout columns="*, *" rows="*" visibility="collapsed" id="buttons" class="card-block">
+            <Button col="0" row="0" colSpan="2" text="Guardar cambios" tap="saveChanges" class="addCart" />
+        </GridLayout>
     </StackLayout>
 </Page>

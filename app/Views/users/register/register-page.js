@@ -2,6 +2,7 @@ var RegisterViewModel = require("./register-view-model");
 var registerViewModel = new RegisterViewModel();
 const dialogs = require("tns-core-modules/ui/dialogs");
 const appSettings = require("tns-core-modules/application-settings");
+const { Frame } = require("tns-core-modules/ui/frame");
 const {
 	verifyToken,
 	deleteSesion,
@@ -9,6 +10,7 @@ const {
 	parseJSON,
 	checkStatus,
 } = require("../../../functions");
+const { ObservableArray } = require("tns-core-modules/data/observable-array");
 
 // exports.pageLoaded = (args) => {
 //     var page = args.object;
@@ -36,7 +38,6 @@ exports.onNavigatingTo = async (args) => {
 			.then(checkStatus)
 			.then(parseJSON)
 			.then((json) => {
-				console.log("JSON Produc: " + JSON.stringify(json));
 				if (json.status === "OK") {
 					const picker = main.getViewById("rolPicker");
 
@@ -46,7 +47,7 @@ exports.onNavigatingTo = async (args) => {
 						try {
 							item = {
 								id: json.data[i].id,
-								name: value.data[i].name,
+								name: json.data[i].name,
 							};
 						} catch (e) {
 							console.error(e);
@@ -110,23 +111,25 @@ exports.onNavigatingTo = async (args) => {
 };
 
 exports.Register = async (args) => {
-	const login = args.object;
-	const loginParent = login.parent;
+	const page = args.object.page;
 	const main = page.getViewById("main");
 	const indicator = createActivityIndicator();
 	main.addChild(indicator);
+	main.getViewById("title").visibility = "collapsed";
+	main.getViewById("details").visibility = "collapsed";
+
 	const verifiedToken = await verifyToken();
 	if (verifiedToken.id === 0 && verifiedToken.role >= 2) {
-		const curp = loginParent.getViewById("curp");
-		const nickname = loginParent.getViewById("nickname");
-		const firstName = loginParent.getViewById("firstName");
-		const lastName = loginParent.getViewById("lastName");
-		const password = loginParent.getViewById("password");
-		const rep_password = loginParent.getViewById("rep_password");
-		const birthDay = loginParent.getViewById("birthDay");
-		const addres = loginParent.getViewById("addres");
-		const phone = loginParent.getViewById("phone");
-		const rol = loginParent.getViewById("rolPicker");
+		const curp = page.getViewById("curp");
+		const nickname = page.getViewById("nickname");
+		const firstName = page.getViewById("firstName");
+		const lastName = page.getViewById("lastName");
+		const password = page.getViewById("password");
+		const rep_password = page.getViewById("rep_password");
+		const birthDay = page.getViewById("birthDay");
+		const addres = page.getViewById("addres");
+		const phone = page.getViewById("phone");
+		const rol = page.getViewById("rolPicker");
 
 		if (password.text !== rep_password.text) {
 			password.className += " input-invalid";
@@ -137,6 +140,25 @@ exports.Register = async (args) => {
 				message: `Verifique que las contraseñas coincidan.`,
 				okButtonText: "Ok",
 			});
+			main.removeChild(indicator);
+			main.getViewById("title").visibility = "visible";
+			main.getViewById("details").visibility = "visible";
+
+			return;
+		}
+
+		if (password.text.length < 8) {
+			password.className += " input-invalid";
+			rep_password.className += " input-invalid";
+
+			dialogs.alert({
+				title: "Contraseña invalida",
+				message: `Verifique que la contraseña mida 8 o más caracteres.`,
+				okButtonText: "Ok",
+			});
+			main.removeChild(indicator);
+			main.getViewById("title").visibility = "visible";
+			main.getViewById("details").visibility = "visible";
 
 			return;
 		}
@@ -163,18 +185,7 @@ exports.Register = async (args) => {
 							okButtonText: "Ok",
 						})
 						.then(() => {
-							const navegation = {
-								moduleName: "Views/main/main-page",
-								clearHistory: true,
-								transition: {
-									name: "slide",
-								},
-							};
-
-							appSettings.setString("token", response.jwt);
-							appSettings.setBoolean("auth", true);
-
-							args.object.page.frame.navigate(navegation);
+							Frame.topmost().goBack();
 						});
 				} else if (response.status === "EXIST_ERROR") {
 					if (response.errorCode === 1) {
@@ -185,6 +196,9 @@ exports.Register = async (args) => {
 							message: `El CURP: ${curp} ya existe.`,
 							okButtonText: "Ok",
 						});
+						main.removeChild(indicator);
+						main.getViewById("title").visibility = "visible";
+						main.getViewById("details").visibility = "visible";
 
 						return;
 					} else if (response.errorCode === 2) {
@@ -195,6 +209,9 @@ exports.Register = async (args) => {
 							message: `El nombre de usuario: ${nickname} ya existe.`,
 							okButtonText: "Ok",
 						});
+						main.removeChild(indicator);
+						main.getViewById("title").visibility = "visible";
+						main.getViewById("details").visibility = "visible";
 					}
 				} else if (response.status === "WARNING") {
 					dialogs.alert({
@@ -215,10 +232,13 @@ exports.Register = async (args) => {
 			`${conectionLink}?curp=${curp.text}&nickname=${nickname.text}&` +
 				`pw=${password.text}&nombre=${firstName.text}&apellido=${lastName.text}&` +
 				`nacimiento=${birthDay.year}-${birthDay.month}-${birthDay.day}` +
-				`&direccion=${addres.text}&telefono=${phone.text}&rol=${rol.name.selectedIndex + 1}`
+				`&direccion=${addres.text}&telefono=${phone.text}&rol=${
+					rol.selectedIndex + 1
+				}`
 		);
 		console.log(URI);
 		xhttp.open("GET", URI, true);
+		xhttp.setRequestHeader("token", appSettings.getString("token"));
 		xhttp.send();
 	} else if (verifiedToken.id === 1) {
 		dialogs
